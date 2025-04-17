@@ -1,0 +1,43 @@
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <h3>About Us</h3>
+            <p>AI Finance Manager helps you take control of your finances with intelligent budgeting and expense tracking.</p>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                <li><a href="/expenses">Expenses</a></li>
+                <li><a href="/ai">AI Assistant</a></li>
+                <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Contact</h3>
+            <p>Email: <a href="mailto:support@aifinancemanager.com">support@aifinancemanager.com</a></p>
+            <p>Phone: +66 123 456 789</p>
+            <div class="social-links">
+                <a href="#" class="social-link">Facebook</a>
+                <a href="#" class="social-link">Twitter</a>
+                <a href="#" class="social-link">LinkedIn</a>
+            </div>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Newsletter</h3>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <p>AI Finance Manager © 2025. All rights reserved.</p>
+        <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    </div>
+</footer>

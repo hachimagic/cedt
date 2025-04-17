@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <h1>Financial Analysis</h1>
+  
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5>Monthly Spending Trends</h5>
+        </div>
+        <div class="card-body">
+          <canvas id="trendsChart"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5>Top Categories</h5>
+        </div>
+        <div class="card-body">
+          <canvas id="categoriesChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5>Savings Opportunities</h5>
+        </div>
+        <div class="card-body">
+          <div id="savingsList"></div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5>AI Recommendations</h5>
+        </div>
+        <div class="card-body">
+          <div id="aiRecommendations" class="alert alert-info"></div>
+          <button class="btn btn-primary" onclick="getAIRecommendations()">
+            Get AI Analysis
+          </button>
+        </div>
+      </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Load analysis data
+  Promise.all([
+    fetch('/ai/analysis/trends').then(r => r.json()),
+    fetch('/ai/analysis/categories').then(r => r.json()),
+    fetch('/ai/analysis/savings').then(r => r.json())
+  ]).then(([trends, categories, savings]) => {
+    // Render trends chart
+    new Chart(document.getElementById('trendsChart'), {
+      type: 'line',
+      data: {
+        labels: Object.keys(trends),
+        datasets: [{
+          label: 'Monthly Spending',
+          data: Object.values(trends),
+          borderColor: '#007bff',
+          fill: false
+        }]
+      }
+    });
+
+    // Render categories chart
+    new Chart(document.getElementById('categoriesChart'), {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(categories),
+        datasets: [{
+          data: Object.values(categories),
+          backgroundColor: [
+            '#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8'
+          ]
+        }]
+      }
+    });
+
+    // Render savings opportunities
+    const savingsList = document.getElementById('savingsList');
+    for (const [amount, count] of Object.entries(savings.recurring_payments)) {
+      const item = document.createElement('div');
+      item.className = 'alert alert-warning';
+      item.textContent = `Recurring payment: ${amount} (${count} times)`;
+      savingsList.appendChild(item);
+    }
+  });
+});
+
+function getAIRecommendations() {
+    const recommendationsDiv = document.getElementById('aiRecommendations');
+    recommendationsDiv.textContent = 'Analyzing your transactions...';
+    
+    fetch('/ai/analysis/ai')
+        .then(response => response.json())
+        .then(data => {
+            recommendationsDiv.innerHTML = data.analysis.replace(/\n/g, '<br>');
+        })
+        .catch(error => {
+            recommendationsDiv.textContent = 'Error getting AI analysis. Please try again.';
+        });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Edit Transaction</h1>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label for="date_time">Date/Time</label>
+            <input type="text" class="form-control" id="date_time" name="date_time" 
+                   value="{{ transaction.date_time.strftime('%d/%m/%y %H:%M') }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="transaction_type">Transaction Type</label>
+            <input type="text" class="form-control" id="transaction_type" name="transaction_type" 
+                   value="{{ transaction.transaction_type }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="details">Details</label>
+            <input type="text" class="form-control" id="details" name="details" 
+                   value="{{ transaction.details }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="withdrawal">Withdrawal</label>
+            <input type="number" step="0.01" class="form-control" id="withdrawal" name="withdrawal" 
+                   value="{{ transaction.withdrawal if transaction.withdrawal else '' }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="deposit">Deposit</label>
+            <input type="number" step="0.01" class="form-control" id="deposit" name="deposit" 
+                   value="{{ transaction.deposit if transaction.deposit else '' }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="balance">Balance</label>
+            <input type="number" step="0.01" class="form-control" id="balance" name="balance" 
+                   value="{{ transaction.balance }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="branch">Branch</label>
+            <input type="text" class="form-control" id="branch" name="branch" 
+                   value="{{ transaction.branch }}">
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="{{ url_for('expenses') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
