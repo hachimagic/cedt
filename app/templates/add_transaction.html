@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h2>Add New Transaction</h2>
+        <p class="text-muted">Record your income or expenses</p>
+    </div>
+
+    <div class="form-container card">
+        <form method="POST" action="{{ url_for('expenses.add_transaction') }}" class="transaction-form">
+            <div class="form-group">
+                <label for="amount">Amount (฿)</label>
+                <div class="input-group">
+                    <span class="input-prefix">฿</span>
+                    <input type="number" 
+                           step="0.01" 
+                           class="form-control" 
+                           id="amount" 
+                           name="amount" 
+                           required
+                           placeholder="0.00"
+                           min="0">
+                </div>
+                <small class="form-text">Enter the transaction amount</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="datetime-local" 
+                       class="form-control" 
+                       id="date" 
+                       name="date" 
+                       required
+                       value="">
+                <small class="form-text">Select the transaction date and time</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select class="form-control" id="category" name="category_id" required>
+                    <option value="">Select a category</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+                <small class="form-text">Choose a category for this transaction</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" 
+                          id="description" 
+                          name="description" 
+                          rows="3"
+                          placeholder="Enter transaction details"></textarea>
+                <small class="form-text">Add any additional notes or details</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="type">Transaction Type</label>
+                <div class="transaction-type-selector">
+                    <div class="type-option">
+                        <input type="radio" 
+                               id="withdrawal" 
+                               name="type" 
+                               value="withdrawal" 
+                               checked>
+                        <label for="withdrawal" class="type-label withdrawal">
+                            <i class="fas fa-minus-circle"></i>
+                            Expense
+                        </label>
+                    </div>
+                    <div class="type-option">
+                        <input type="radio" 
+                               id="deposit" 
+                               name="type" 
+                               value="deposit">
+                        <label for="deposit" class="type-label deposit">
+                            <i class="fas fa-plus-circle"></i>
+                            Income
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Add Transaction
+                </button>
+                <a href="{{ url_for('expenses.index') }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set default date to current date and time
+    const dateInput = document.getElementById('date');
+    if (!dateInput.value) {
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        dateInput.value = now.toISOString().slice(0,16);
+    }
+
+    // Add validation styles on input
+    const form = document.querySelector('.transaction-form');
+    const inputs = form.querySelectorAll('input, select, textarea');
+
+    inputs.forEach(input => {
+        input.addEventListener('invalid', function(e) {
+            e.preventDefault();
+            this.classList.add('is-invalid');
+        });
+
+        input.addEventListener('input', function() {
+            if (this.classList.contains('is-invalid')) {
+                this.classList.remove('is-invalid');
+            }
+        });
+    });
+
+    // Update amount color based on transaction type
+    const amountInput = document.getElementById('amount');
+    const typeInputs = document.querySelectorAll('input[name="type"]');
+
+    function updateAmountColor() {
+        const type = document.querySelector('input[name="type"]:checked').value;
+        amountInput.classList.remove('amount-withdrawal', 'amount-deposit');
+        amountInput.classList.add(`amount-${type}`);
+    }
+
+    typeInputs.forEach(input => {
+        input.addEventListener('change', updateAmountColor);
+    });
+
+    updateAmountColor(); // Initial color
+});
+</script>
+{% endblock %}

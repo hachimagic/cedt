@@ -1,0 +1,396 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mobile-container">
+  <div class="status-bar">
+    <div class="time">9:41</div>
+    <div class="status-icons">
+      <div class="signal"></div>
+      <div class="wifi"></div>
+      <div class="battery"></div>
+    </div>
+  </div>
+
+  <h1>Personal AI for Financial Planning</h1>
+  
+  <div class="tabs">
+    <div class="tab active">OVERVIEW</div>
+  </div>
+
+  <div class="expenses-overview">
+    <h2>Total Expenses</h2>
+    <div class="chart-container">
+      <canvas id="expensesChart"></canvas>
+    </div>
+  </div>
+
+  <div class="financial-info-section">
+    <h2>Your Financial Information</h2>
+    <div class="financial-inputs-grid">
+      <div class="input-group">
+        <label>Monthly Income</label>
+        <input 
+          type="text" 
+          id="earningsInput" 
+          class="financial-input" 
+          placeholder="Enter amount..."
+          maxlength="15"
+        >
+      </div>
+      <div class="input-group">
+        <label>Monthly Expenses</label>
+        <input 
+          type="text" 
+          id="expensesInput" 
+          class="financial-input" 
+          placeholder="Enter amount..."
+          maxlength="15"
+        >
+      </div>
+      <div class="input-group">
+        <label>Current Debt</label>
+        <input 
+          type="text" 
+          id="debtInput" 
+          class="financial-input" 
+          placeholder="Enter amount..."
+          maxlength="15"
+        >
+      </div>
+      <div class="input-group">
+        <label>Savings Goal</label>
+        <input 
+          type="text" 
+          id="savingsInput" 
+          class="financial-input" 
+          placeholder="Enter amount..."
+          maxlength="15"
+        >
+      </div>
+      <div class="action-buttons">
+        <button id="analyzeBtn" class="analyze-button">
+          <i class="fas fa-chart-line"></i>
+          Analyze My Finances
+        </button>
+        <button id="saveBtn" class="save-button">
+          <i class="fas fa-save"></i>
+          Save Profile
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="analysisResults" class="analysis-results" style="display:none;">
+    <h3>Financial Analysis</h3>
+    <div id="resultsContent"></div>
+  </div>
+
+  <div class="ai-advice">
+    <h2>AI advice:</h2>
+    <div class="advice-content" id="aiAdvice">
+      Loading AI advice...
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const expensesData = {
+    labels: ['Food', 'Clothing', 'Health Care', 'Utilities', 'Housing Rent', 'Others'],
+    datasets: [{
+      data: [20, 15, 15, 15, 20, 15],
+      backgroundColor: [
+        '#FFB800', // Food (Yellow)
+        '#FF1493', // Clothing (Deep Pink)
+        '#00CED1', // Health Care (Dark Turquoise)
+        '#00BFFF', // Utilities (Deep Sky Blue)
+        '#9932CC', // Housing Rent (Dark Orchid)
+        '#90EE90'  // Others (Light Green)
+      ],
+      borderWidth: 0
+    }]
+  };
+
+  new Chart(document.getElementById('expensesChart'), {
+    type: 'doughnut',
+    data: expensesData,
+    options: {
+      cutout: '75%',
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          left: 20,
+          right: 20
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'right',
+          align: 'center',
+          labels: {
+            usePointStyle: true,
+            padding: 15,
+            font: {
+              size: 12,
+              family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+              weight: '500'
+            },
+            color: '#1F3478',
+            boxWidth: 8,
+            boxHeight: 8
+          }
+        }
+      }
+    }
+  });
+
+  fetch('/ai/analysis/ai')
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('aiAdvice').innerHTML = data.analysis.replace(/\n/g, '<br>');
+    })
+    .catch(error => {
+      document.getElementById('aiAdvice').textContent = 'Error loading AI advice. Please try again.';
+    });
+
+  // Handle currency formatting for all financial inputs
+  const financialInputs = document.querySelectorAll('.financial-input');
+  financialInputs.forEach(input => {
+    input.addEventListener('input', function(e) {
+      let value = e.target.value.replace(/[^0-9]/g, '');
+      if (value) {
+        value = parseFloat(value).toLocaleString();
+        e.target.value = `฿${value}`;
+      }
+    });
+  });
+
+  // Handle analyze button click
+  document.getElementById('analyzeBtn').addEventListener('click', function() {
+    const income = parseFloat(document.getElementById('earningsInput').value.replace(/[^0-9]/g, '')) || 0;
+    const expenses = parseFloat(document.getElementById('expensesInput').value.replace(/[^0-9]/g, '')) || 0;
+    const debt = parseFloat(document.getElementById('debtInput').value.replace(/[^0-9]/g, '')) || 0;
+    const savingsGoal = parseFloat(document.getElementById('savingsInput').value.replace(/[^0-9]/g, '')) || 0;
+
+    // Calculate financial metrics
+    const disposableIncome = income - expenses;
+    const savingsRate = income > 0 ? (disposableIncome / income * 100).toFixed(1) : 0;
+    const debtToIncome = income > 0 ? (debt / income * 100).toFixed(1) : 0;
+    const monthsToGoal = disposableIncome > 0 ? (savingsGoal / disposableIncome).toFixed(1) : '∞';
+
+    // Display results
+    const resultsHTML = `
+      <div class="metric">
+        <span class="label">Disposable Income:</span>
+        <span class="value">฿${disposableIncome.toLocaleString()}</span>
+      </div>
+      <div class="metric">
+        <span class="label">Savings Rate:</span>
+        <span class="value">${savingsRate}%</span>
+      </div>
+      <div class="metric">
+        <span class="label">Debt-to-Income:</span>
+        <span class="value">${debtToIncome}%</span>
+      </div>
+      <div class="metric">
+        <span class="label">Months to Savings Goal:</span>
+        <span class="value">${monthsToGoal}</span>
+      </div>
+    `;
+
+    document.getElementById('resultsContent').innerHTML = resultsHTML;
+    document.getElementById('analysisResults').style.display = 'block';
+  });
+
+  // Handle save button click
+  document.getElementById('saveBtn').addEventListener('click', function() {
+    const income = parseFloat(document.getElementById('earningsInput').value.replace(/[^0-9]/g, '')) || 0;
+    const expenses = parseFloat(document.getElementById('expensesInput').value.replace(/[^0-9]/g, '')) || 0;
+    const debt = parseFloat(document.getElementById('debtInput').value.replace(/[^0-9]/g, '')) || 0;
+    const savingsGoal = parseFloat(document.getElementById('savingsInput').value.replace(/[^0-9]/g, '')) || 0;
+
+    fetch('/ai/save_financial_profile', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        income: income,
+        expenses: expenses,
+        debt: debt,
+        savings_goal: savingsGoal
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        alert('Error saving profile: ' + data.error);
+      } else {
+        alert('Profile saved successfully!');
+      }
+    })
+    .catch(error => {
+      alert('Error saving profile: ' + error.message);
+    });
+  });
+});
+</script>
+
+<style>
+.financial-info-section {
+  margin: 30px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.financial-info-section h2 {
+  color: #1F3478;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.financial-inputs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  color: #1F3478;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.financial-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #1F3478;
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+}
+
+.financial-input:focus {
+  outline: none;
+  border-color: #00BFFF;
+  box-shadow: 0 2px 8px rgba(0,191,255,0.2);
+}
+
+.financial-input::placeholder {
+  color: #9e9e9e;
+}
+
+.action-buttons {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.analyze-button, .save-button {
+  flex: 1;
+  max-width: 300px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  color: white;
+}
+
+.analyze-button {
+  background-color: #00BFFF;
+}
+
+.analyze-button:hover {
+  background-color: #0095D9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,191,255,0.2);
+}
+
+.save-button {
+  background-color: #28a745;
+}
+
+.save-button:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(40,167,69,0.2);
+}
+
+.analyze-button:active, .save-button:active {
+  transform: translateY(0);
+}
+
+.analysis-results {
+  margin: 20px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.analysis-results h3 {
+  color: #1F3478;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.metric {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.metric:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-weight: 500;
+  color: #1F3478;
+}
+
+.value {
+  font-weight: 600;
+  color: #00BFFF;
+}
+
+@media (max-width: 768px) {
+  .financial-inputs-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .analyze-button, .save-button {
+    width: 100%;
+  }
+}
+</style>
+{% endblock %}

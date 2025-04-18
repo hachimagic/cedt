@@ -1,0 +1,584 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="expenses-page">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Expenses Overview</h1>
+      <p class="text-muted">Track and manage your financial transactions</p>
+    </div>
+    <div class="header-actions">
+      <a href="{{ url_for('expenses.add_transaction') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i>
+        Add Transaction 
+      </a>
+    </div>
+  </div>
+
+  <div class="dashboard-summary">
+    <div class="summary-card deposits">
+      <div class="summary-icon">
+        <i class="fas fa-arrow-down"></i>
+      </div>
+      <div class="summary-details">
+        <span class="summary-label">Total Deposits</span>
+        <span class="summary-value">฿{{ "%.2f"|format(total_deposits) }}</span>
+      </div>
+    </div>
+    <div class="summary-card withdrawals">
+      <div class="summary-icon">
+        <i class="fas fa-arrow-up"></i>
+      </div>
+      <div class="summary-details">
+        <span class="summary-label">Total Withdrawals</span>
+        <span class="summary-value">฿{{ "%.2f"|format(total_withdrawals) }}</span>
+      </div>
+    </div>
+    <div class="summary-card balance">
+      <div class="summary-icon">
+        <i class="fas fa-wallet"></i>
+      </div>
+      <div class="summary-details">
+        <span class="summary-label">Current Balance</span>
+        <span class="summary-value">฿{{ "%.2f"|format(current_balance) }}</span>
+      </div>
+    </div>
+  </div>
+    
+  <div class="charts-section">
+    <div class="chart-container">
+      <div class="chart-header">
+        <h3>Spending by Category</h3>
+      </div>
+      <canvas id="categoryChart"></canvas>
+    </div>
+    <div class="chart-container">
+      <div class="chart-header">
+        <h3>Daily Spending Trend</h3>
+      </div>
+      <canvas id="dailySpendingChart"></canvas>
+    </div>
+  </div>
+
+  <div class="upload-section card">
+    <div class="upload-header">
+      <h3>Import Transactions (only works with krungthai pdf statement)</h3>
+      <p>Upload your bank statement PDF to automatically import transactions</p>
+    </div>
+    <form action="{{ url_for('expenses.preview_transcript') }}" method="post" enctype="multipart/form-data" class="upload-form">
+      <div class="file-input-container">
+        <input type="file" name="file" id="file" accept=".pdf" required class="file-input">
+        <label for="file" class="file-label">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <span>Choose PDF file</span>
+        </label>
+      </div>
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-upload"></i>
+        Upload and Extract
+      </button>
+    </form>
+  </div>
+
+  {% if preview_mode %}
+    <div class="preview-section">
+      <div class="section-header">
+        <h2>Preview Transactions</h2>
+        <p>Review and categorize the extracted transactions before saving</p>
+      </div>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Date/Time</th>
+              <th>Transaction</th>
+              <th>Details</th>
+              <th>Deposit</th>
+              <th>Withdrawal</th>
+              <th>Balance</th>
+              <th>Explanation</th>
+              <th>Category</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for trans in parsed_transactions %}
+            <tr data-transaction-id="{{ trans.id }}" data-extra="{{ trans.extra }}" data-line-text="{{ trans.line_text }}">
+              <td>{{ loop.index }}</td>
+              <td>{{ trans.date_time }}</td>
+              <td>{{ trans.transaction }}</td>
+              <td>{{ trans.details }}</td>
+              <td class="amount deposit">{{ trans.deposit }}</td>
+              <td class="amount withdrawal">{{ trans.withdrawal }}</td>
+              <td class="amount">{{ trans.balance }}</td>
+              <td>
+                <input type="text" 
+                       class="form-control" 
+                       name="explanation" 
+                       value="{{ trans.explanation or '' }}"
+                       placeholder="Add explanation">
+              </td>
+              <td>
+                <select class="form-control" name="category">
+                  <option value="">Select Category</option>
+                  {% for category in categories %}
+                    <option value="{{ category.id }}" {% if trans.category_id|string == category.id|string %}selected{% endif %}>
+                      {{ category.name }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="actions-bar">
+        <button id="confirm-upload" class="btn btn-primary">
+          <i class="fas fa-save"></i>
+          Confirm and Save
+        </button>
+      </div>
+    </div>
+  {% else %}
+    {% if transactions %}
+      <div class="transactions-section">
+        <div class="section-header">
+          <h2>Transaction History</h2>
+          <p>View and manage your recorded transactions</p>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Date/Time</th>
+                <th>Transaction</th>
+                <th>Details</th>
+                <th>Deposit</th>
+                <th>Withdrawal</th>
+                <th>Balance</th>
+                <th>Explanation</th>
+                <th>Category</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for trans in transactions %}
+              <tr data-transaction-id="{{ trans.id }}">
+                <td>{{ loop.index }}</td>
+                <td>{{ trans.date_time.strftime('%d/%m/%y %H:%M') if trans.date_time is not string else trans.date_time }}</td>
+                <td>{{ trans.transaction }}</td>
+                <td>{{ trans.details }}</td>
+                <td class="amount deposit">{{ trans.deposit if trans.deposit else '' }}</td>
+                <td class="amount withdrawal">{{ trans.withdrawal if trans.withdrawal else '' }}</td>
+                <td class="amount">{{ trans.balance }}</td>
+                <td>
+                  <input type="text" 
+                         class="form-control" 
+                         name="explanation" 
+                         value="{{ trans.explanation or '' }}"
+                         placeholder="Add explanation">
+                </td>
+                <td>
+                  <select class="form-control" name="category">
+                    <option value="">Select Category</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {% if trans.category_id|string == category.id|string %}selected{% endif %}>
+                      {{ category.name }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </td>
+                <td class="actions">
+                  <button class="btn btn-icon btn-delete" title="Delete Transaction">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="actions-bar">
+          <button id="save-all" class="btn btn-primary">
+            <i class="fas fa-save"></i>
+            Save All Changes
+          </button>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if failed_transactions %}
+      <div class="failed-transactions card">
+        <div class="section-header">
+          <h2>Failed Transactions</h2>
+          <p>The following transactions could not be processed</p>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Line</th>
+                <th>Error</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for failed in failed_transactions %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ failed.line }}</td>
+                <td class="error-message">{{ failed.error }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if non_transactions %}
+      <div class="other-lines card">
+        <div class="section-header">
+          <h2>Additional Information</h2>
+          <p>Other content from the statement</p>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Content</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for line in non_transactions %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ line }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // File input handling
+  const fileInput = document.getElementById('file');
+  const fileLabel = document.querySelector('.file-label span');
+  
+  if (fileInput) {
+    fileInput.addEventListener('change', function() {
+      if (this.files.length > 0) {
+        fileLabel.textContent = this.files[0].name;
+      } else {
+        fileLabel.textContent = 'Choose PDF file';
+      }
+    });
+  }
+
+  // Initialize charts if they exist
+  if (document.getElementById('categoryChart')) {
+    initializeCharts();
+  }
+
+  // Handle delete button clicks with confirmation
+  document.querySelectorAll('.btn-delete').forEach(button => {
+    button.addEventListener('click', async function() {
+      const row = this.closest('tr');
+      const transactionId = row.dataset.transactionId;
+      
+      if (confirm('Are you sure you want to delete this transaction? This action cannot be undone.')) {
+        try {
+          const response = await fetch(`/delete_transaction/${transactionId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          if (response.ok) {
+            row.style.animation = 'fadeOut 0.3s ease-out forwards';
+            setTimeout(() => row.remove(), 300);
+            initializeCharts(); // Update charts after deletion
+          } else {
+            throw new Error('Failed to delete transaction');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Failed to delete transaction. Please try again.');
+        }
+      }
+    });
+  });
+
+  // Handle confirm and save for preview mode
+  const confirmUploadButton = document.getElementById('confirm-upload');
+  if (confirmUploadButton) {
+    confirmUploadButton.addEventListener('click', async function() {
+      try {
+        console.log('Starting confirm and save process...');
+        
+        if (!confirm('Are you sure you want to save these transactions?')) {
+          console.log('User cancelled save operation');
+          return;
+        }
+
+        console.log('Collecting transaction data...');
+        const rows = document.querySelectorAll('tbody tr');
+        console.log(`Found ${rows.length} transaction rows`);
+        const transactions = [];
+        for (const [index, row] of rows.entries()) {
+          console.log(`Processing row ${index + 1}:`);
+          try {
+            // Get all cell values
+            const cells = Array.from(row.cells).map(cell => cell.textContent.trim());
+            console.log('Cell values:', cells);
+
+            // Get form inputs
+            const explanation = row.querySelector('input[name="explanation"]')?.value || '';
+            const categoryId = row.querySelector('select[name="category"]')?.value || null;
+            console.log('Form inputs:', { explanation, categoryId });
+
+            // Get dataset values
+            const { transactionId, extra, lineText } = row.dataset;
+            console.log('Dataset values:', { transactionId, extra, lineText });
+
+            const transaction = {
+              id: transactionId || '',
+              date_time: cells[1],
+              transaction: cells[2],
+              details: cells[3],
+              deposit: cells[4],
+              withdrawal: cells[5],
+              balance: cells[6],
+              explanation: explanation,
+              category_id: categoryId,
+              extra: extra || '',
+              line_text: lineText || cells[3]
+            };
+            console.log('Constructed transaction:', transaction);
+            transactions.push(transaction);
+          } catch (err) {
+            console.error(`Error processing row ${index + 1}:`, err);
+            console.error('Row HTML:', row.outerHTML);
+            throw err;
+          }
+        }
+        console.log('All transactions:', transactions);
+
+        console.log(`Processed ${transactions.length} transactions successfully`);
+        console.log('Full transactions array:', transactions);
+        console.log('Sending save request to server...');
+        const requestBody = { transactions };
+        console.log('Request body:', JSON.stringify(requestBody, null, 2));
+        
+        const saveResponse = await fetch('/expenses/save_transcript', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+        });
+        
+        console.log('Response status:', saveResponse.status);
+        console.log('Response headers:', Object.fromEntries(saveResponse.headers.entries()));
+
+        const responseText = await saveResponse.text();
+        console.log('Raw response:', responseText);
+        
+        let data;
+        try {
+            data = JSON.parse(responseText);
+            console.log('Parsed response data:', data);
+        } catch (err) {
+            console.error('Failed to parse response as JSON:', err);
+            throw new Error('Invalid response from server');
+        }
+        
+        if (saveResponse.ok) {
+          console.log('Save successful:', data);
+          alert(`Transactions saved successfully! ${data.count} transactions processed.`);
+          console.log('Redirecting to expenses page...');
+          const timestamp = new Date().getTime();
+          setTimeout(() => {
+            window.location.replace('/expenses?t=' + timestamp);
+          }, 1000); // Increased delay to ensure save completes
+        } else {
+          console.error('Server returned error:', data);
+          throw new Error(data.message || 'Failed to save transactions');
+        }
+      } catch (error) {
+        console.error('Save operation failed:', error);
+        alert('Error saving transactions: ' + error.message);
+      }
+    });
+  }
+
+  // Handle save all changes for existing transactions
+  const saveAllButton = document.getElementById('save-all');
+  if (saveAllButton) {
+    saveAllButton.addEventListener('click', async function() {
+      try {
+        const transactions = Array.from(document.querySelectorAll('tbody tr')).map(row => ({
+          id: row.dataset.transactionId,
+          date_time: row.cells[1].textContent,
+          transaction: row.cells[2].textContent,
+          details: row.cells[3].textContent,
+          deposit: row.cells[4].textContent,
+          withdrawal: row.cells[5].textContent,
+          balance: row.cells[6].textContent,
+          explanation: row.querySelector('input[name="explanation"]').value,
+          category_id: row.querySelector('select[name="category"]').value
+        }));
+
+        const response = await fetch('/expenses/save_transcript', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ transactions })
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+          alert('Changes saved successfully!');
+          initializeCharts(); // Update charts after saving
+        } else {
+          throw new Error(data.message || 'Failed to save changes');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error saving changes: ' + error.message);
+      }
+    });
+  }
+
+  // Handle category changes
+  document.querySelectorAll('select[name="category"]').forEach(select => {
+    select.addEventListener('change', function() {
+      if (document.getElementById('categoryChart')) {
+        initializeCharts(); // Update charts when categories change
+      }
+    });
+  });
+});
+
+// Chart initialization function
+function initializeCharts() {
+  // Get transaction data
+  const transactions = Array.from(document.querySelectorAll('tbody tr')).map(row => ({
+    date: row.cells[1].textContent,
+    withdrawal: parseFloat(row.cells[5].textContent.replace(/[^\d.-]/g, '') || 0),
+    category: row.querySelector('select[name="category"] option:checked').text,
+    categoryId: row.querySelector('select[name="category"]').value
+  }));
+
+  // Process data for category chart
+  const categoryData = transactions.reduce((acc, trans) => {
+    if (trans.categoryId && trans.withdrawal > 0) {
+      acc[trans.category] = (acc[trans.category] || 0) + trans.withdrawal;
+    }
+    return acc;
+  }, {});
+
+  // Process data for daily spending chart
+  const dailyData = transactions.reduce((acc, trans) => {
+    const date = trans.date.split(' ')[0];
+    if (trans.withdrawal > 0) {
+      acc[date] = (acc[date] || 0) + trans.withdrawal;
+    }
+    return acc;
+  }, {});
+
+  // Color palette for charts
+  const colors = [
+    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+    '#9966FF', '#FF9F40', '#FF6384', '#36A2EB'
+  ];
+
+  // Create category pie chart
+  const categoryChart = new Chart(document.getElementById('categoryChart'), {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(categoryData),
+      datasets: [{
+        data: Object.values(categoryData),
+        backgroundColor: colors,
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: {
+            padding: 20,
+            font: {
+              size: 12
+            }
+          }
+        }
+      },
+      animation: {
+        animateScale: true,
+        animateRotate: true
+      }
+    }
+  });
+
+  // Create daily spending line chart
+  const dailyChart = new Chart(document.getElementById('dailySpendingChart'), {
+    type: 'line',
+    data: {
+      labels: Object.keys(dailyData),
+      datasets: [{
+        label: 'Daily Spending',
+        data: Object.values(dailyData),
+        borderColor: '#36A2EB',
+        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Amount (฿)'
+          },
+          grid: {
+            color: 'rgba(0, 0, 0, 0.05)'
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          }
+        }
+      }
+    }
+  });
+}
+</script>
+{% endblock %}

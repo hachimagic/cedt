@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Finance Manager - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='additional-styles.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Mobile-style header -->
+        <div class="mobile-header">
+            <div class="header-left">
+                <h1>Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">P0501</div>
+                <span class="material-icons-round notification-icon">notifications</span>
+                <div class="wallet-amount">฿20,000</div>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-grid">
+            <div class="summary-card income">
+                <h3>Income</h3>
+                <p class="amount">฿25,200</p>
+            </div>
+            <div class="summary-card expense">
+                <h3>Expense</h3>
+                <p class="amount">฿27,150</p>
+            </div>
+            <div class="summary-card balance">
+                <h3>Balance</h3>
+                <p class="amount">฿5,200</p>
+            </div>
+            <div class="summary-card transaction">
+                <h3>Transaction</h3>
+                <p class="amount">฿2,200</p>
+            </div>
+        </div>
+
+        <!-- Budgeting Section -->
+        <div class="budgeting-section">
+            <h2>Budgeting</h2>
+            <div class="budget-buttons">
+                <a href="/expenses" class="budget-button">
+                    Expense Tracker
+                </a>
+                <a href="#" class="budget-button">
+                    Budget Planning
+                </a>
+                <a href="/ai" class="budget-button">
+                    AI for financial Planning
+                </a>
+                <a href="#" class="budget-button">
+                    Price compare function
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

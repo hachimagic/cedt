@@ -1,0 +1,30 @@
+<header class="header">
+    <div class="header-container">
+        <div class="brand">
+            <a href="{{ url_for('main.index') }}" class="logo">
+<img src="{{ url_for('static', filename='images/logo.png') }}" alt="AI Finance Manager Logo">
+            </a>
+        </div>
+        
+        <nav class="nav" aria-label="Main navigation">
+            <button class="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <div class="nav-links">
+                <a href="{{ url_for('main.index') }}" class="nav-link">Home</a>
+                <div class="dropdown">
+                    <button class="nav-link">Features <i class="arrow"></i></button>
+                    <div class="dropdown-content">
+                        <a href="{{ url_for('debt.index') }}">Debt Management</a>
+                        <a href="/expenses">Expenses Tracking</a>
+                        <a href="/ai">AI Assistant</a>
+                    </div>
+                </div>
+                <a href="{{ url_for('settings.index') }}" class="nav-link">Settings</a>
+            </div>
+        </nav>
+    </div>
+</header>
