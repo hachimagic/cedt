@@ -283,6 +283,45 @@ p {
     margin: 0 auto;
 }
 
+.field-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.field-box {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.field-box:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.category-box {
+    min-width: 100%;
+    min-height: 150px;
+}
+
+.note-box {
+    min-height: 200px;
+    resize: vertical;
+    overflow: auto;
+}
+
+@media (max-width: 768px) {
+    .field-box {
+        padding: 1.5rem;
+    }
+}
+
 .page-header {
     text-align: center;
     margin-bottom: 2rem;
@@ -338,6 +377,27 @@ p {
     font-size: 1rem;
     transition: var(--transition);
     background: var(--white);
+}
+
+/* Custom Select Styling */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%231E293B' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 12px;
+    padding-right: 2.5rem;
+    cursor: pointer;
+}
+
+.table select,
+.table input[type="text"] {
+    flex: 1 1 auto; /* Allow grow/shrink, base size auto */
+    min-width: 120px; /* Reduce min-width to allow more shrinking */
+    margin: 0.25rem 0;
+    width: auto; /* Ensure width isn't fixed */
 }
 
 .form-group input:hover,
@@ -618,13 +678,57 @@ input[type="radio"]:checked + .type-label.deposit {
     overflow-x: auto;
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
+    -webkit-overflow-scrolling: touch;
+    display: block;
+    width: 100%;
 }
 
 .table {
     width: 100%;
+    min-width: 600px;
     border-collapse: separate;
     border-spacing: 0;
     background: var(--white);
+    table-layout: fixed; /* Revert to fixed layout */
+}
+
+/* Set explicit column widths */
+.table th:nth-child(1),
+.table td:nth-child(1) { width: 5%; } /* # column */
+.table th:nth-child(2),
+.table td:nth-child(2) { width: 10%; } /* Date/Time */
+.table th:nth-child(3),
+.table td:nth-child(3) { width: 15%; } /* Transaction */
+.table th:nth-child(4),
+.table td:nth-child(4) { width: 20%; } /* Details */
+.table th:nth-child(5),
+.table td:nth-child(5) { width: 10%; } /* Deposit */
+.table th:nth-child(6),
+.table td:nth-child(6) { width: 10%; } /* Withdrawal */
+.table th:nth-child(7),
+.table td:nth-child(7) { width: 10%; } /* Balance */
+.table th:nth-child(8),
+.table td:nth-child(8) { width: 15%; } /* Explanation */
+.table th:nth-child(9),
+.table td:nth-child(9) { width: 10%; } /* Category */
+.table th:nth-child(10),
+.table td:nth-child(10) { width: 5%; } /* Actions */
+
+@media (max-width: 768px) {
+    .table-responsive {
+        overflow-x: scroll;
+    }
+    
+    .table {
+        min-width: 100%;
+        table-layout: auto;
+    }
+    
+    .table th,
+    .table td {
+        white-space: nowrap;
+        padding: 0.75rem;
+    }
 }
 
 .table th {
@@ -637,12 +741,33 @@ input[type="radio"]:checked + .type-label.deposit {
     font-size: 0.875rem;
     letter-spacing: 0.05em;
     white-space: nowrap;
+    min-width: 150px;
 }
 
 .table td {
-    padding: 1rem 1.5rem;
+    padding: 0.75rem 1rem; /* Slightly reduce padding */
     border-bottom: 1px solid #E2E8F0;
     color: var(--text-color);
+    vertical-align: middle; /* Ensure vertical alignment */
+}
+
+/* Ensure form elements stay in their columns */
+.table td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+}
+
+/* Specific styling for form elements in table cells */
+.table input[type="text"],
+.table select {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+}
+
+.table .btn-icon {
+    margin: 0 auto;
+    display: block;
 }
 
 .table tr:last-child td {
@@ -683,6 +808,7 @@ input[type="radio"]:checked + .type-label.deposit {
     background: transparent;
     color: var(--text-light);
     transition: var(--transition);
+    flex-shrink: 0; /* Prevent button from shrinking */
 }
 
 .btn-icon:hover {

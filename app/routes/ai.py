@@ -24,10 +24,12 @@ DEMO_AI_ADVICE = """Based on your spending patterns:
 5. Housing rent is your largest expense - consider long-term saving for a down payment"""
 
 @ai_bp.route('/')
+@login_required
 def index():
     return render_template('ai.html')
 
 @ai_bp.route('/analysis/overview')
+@login_required
 def analysis_overview():
     return jsonify({
         'categories': DEMO_CATEGORIES,
@@ -35,10 +37,12 @@ def analysis_overview():
     })
 
 @ai_bp.route('/analysis/categories')
+@login_required
 def analysis_categories():
     return jsonify(DEMO_CATEGORIES)
 
 @ai_bp.route('/analysis/ai')
+@login_required
 def ai_recommendations():
     return jsonify({'analysis': DEMO_AI_ADVICE})
 

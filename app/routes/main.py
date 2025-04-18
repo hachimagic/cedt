@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, jsonify
-from flask_login import current_user
+from flask_login import current_user, login_required
 from flask_wtf.csrf import generate_csrf
 from datetime import datetime
 from ..models.transaction import Transaction
@@ -19,15 +19,17 @@ def get_csrf_token():
     return jsonify({'token': token})
 
 @main_bp.route('/')
+@login_required
 def index():
-    transactions = []
-    if current_user.is_authenticated:
-        transactions = Transaction.get_user_transactions(current_user.id)
-        # Format datetime objects for JSON serialization
-        for trans in transactions:
-            if isinstance(trans.date_time, datetime):
-                trans.date_time = trans.date_time.strftime('%d/%m/%y %H:%M')
-        
+    transactions = Transaction.get_user_transactions(current_user.id)
+    # Format datetime objects for JSON serialization
+    for trans in transactions:
+        if isinstance(trans.date_time, datetime):
+            trans.date_time = trans.date_time.strftime('%d/%m/%y %H:%M')
+    
     return render_template('index.html', 
                          transactions=transactions,
-                         categories=categories)
+                         categories=categories,
+                         income=25200,
+                         expense=27150,
+                         balance=5200)
