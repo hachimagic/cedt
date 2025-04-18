@@ -11,9 +11,12 @@ def load_user(user_id):
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('expenses.index'))
+        
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form.get('username')
+        password = request.form.get('password')
         user = User.get_by_username(username)
         
         if user and user.check_password(password):
@@ -24,22 +27,20 @@ def login():
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('expenses.index'))
+        
     if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
         
         if User.get_by_username(username):
             flash('Username already exists')
-            return redirect(url_for('auth.register'))
-        
-        if any(u.email == email for u in User.get_all_users()):
-            flash('Email already exists')
-            return redirect(url_for('auth.register'))
-        
-        new_user = User.create_user(username, email, password)
-        login_user(new_user)
-        return redirect(url_for('expenses.index'))
+        else:
+            user = User.create_user(username, email, password)
+            login_user(user)
+            return redirect(url_for('expenses.index'))
     return render_template('register.html')
 
 @auth_bp.route('/logout')

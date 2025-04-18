@@ -15,29 +15,15 @@
             
             <div class="nav-links">
                 <a href="{{ url_for('main.index') }}" class="nav-link">Home</a>
-                {% if current_user.is_authenticated %}
-                    <div class="dropdown">
-                        <button class="nav-link">Features <i class="arrow"></i></button>
-                        <div class="dropdown-content">
-                            <a href="{{ url_for('debt.index') }}">Debt Management</a>
-                            <a href="/expenses">Expenses Tracking</a>
-                            <a href="/ai">AI Assistant</a>
-                        </div>
+                <div class="dropdown">
+                    <button class="nav-link">Features <i class="arrow"></i></button>
+                    <div class="dropdown-content">
+                        <a href="{{ url_for('debt.index') }}">Debt Management</a>
+                        <a href="/expenses">Expenses Tracking</a>
+                        <a href="/ai">AI Assistant</a>
                     </div>
-                    <a href="{{ url_for('settings.index') }}" class="nav-link">Settings</a>
-                    <div class="user-menu">
-                        <button class="nav-link user-btn">
-                            <span class="username">{{ current_user.username }}</span>
-                            <i class="arrow"></i>
-                        </button>
-                        <div class="user-dropdown">
-                            <a href="{{ url_for('auth.logout') }}">Logout</a>
-                        </div>
-                    </div>
-                {% else %}
-                    <a href="{{ url_for('auth.login') }}" class="nav-link">Login</a>
-                    <a href="{{ url_for('auth.register') }}" class="nav-link">Register</a>
-                {% endif %}
+                </div>
+                <a href="{{ url_for('settings.index') }}" class="nav-link">Settings</a>
             </div>
         </nav>
     </div>

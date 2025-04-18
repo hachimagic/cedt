@@ -1,5 +1,6 @@
 from flask import Flask, request
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user
+from .models.user import User
 
 login_manager = LoginManager()
 
@@ -9,7 +10,6 @@ def create_app():
     
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
-    
     
     with app.app_context():
         # Import and register blueprints

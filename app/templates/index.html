@@ -3,168 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Finance Manager</title>
+    <title>AI Finance Manager - Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='additional-styles.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
 <body>
-    {% include 'header.html' %}
     <div class="container">
-        <div class="dashboard">
-            <h2>Welcome{% if current_user.is_authenticated %}, {{ current_user.username }}{% endif %}</h2>
-            <p>Your AI-powered finance assistant</p>
-
-            {% if current_user.is_authenticated and transactions %}
-                <!-- Chart containers -->
-                <div class="charts">
-                    <div class="chart-container">
-                        <canvas id="categoryChart"></canvas>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="dailySpendingChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>💳 Account Balance</h3>
-                    <p><strong>฿{{ "%.2f"|format(transactions[-1].balance|float) }}</strong></p>
-                </div>
-            {% else %}
-                <div class="card">
-                    <h3>💳 Account Balance</h3>
-                    <p><strong>฿0.00</strong></p>
-                </div>
-            {% endif %}
-
-            <div class="card">
-                <h3>💰 Savings Goal</h3>
-                <p>Progress: ฿30,000 / ฿50,000</p>
-                <div class="progress-bar">
-                    <div style="width: 60%;"></div>
-                </div>
+        <!-- Mobile-style header -->
+        <div class="mobile-header">
+            <div class="header-left">
+                <h1>Dashboard</h1>
             </div>
-            <div class="card">
-                <h3>📅 Upcoming Bills</h3>
-                <ul>
-                    <li>💡 Electricity - ฿2,000 (10th March)</li>
-                    <li>📶 Internet - ฿800 (15th March)</li>
-                    <li>🏠 Rent - ฿12,000 (1st April)</li>
-                </ul>
+            <div class="header-right">
+                <div class="user-info">P0501</div>
+                <span class="material-icons-round notification-icon">notifications</span>
+                <div class="wallet-amount">฿20,000</div>
             </div>
         </div>
-    </div>
 
-    {% if current_user.is_authenticated and transactions %}
-    <script>
-        // Initialize charts
-        function initializeCharts() {
-            // Get data from server
-            const rawTransactions = JSON.parse('{{ transactions|map(attribute="__dict__")|list|tojson|safe }}');
-            const categoryList = JSON.parse('{{ categories|tojson|safe }}');
+        <!-- Summary Cards -->
+        <div class="summary-grid">
+            <div class="summary-card income">
+                <h3>Income</h3>
+                <p class="amount">฿25,200</p>
+            </div>
+            <div class="summary-card expense">
+                <h3>Expense</h3>
+                <p class="amount">฿27,150</p>
+            </div>
+            <div class="summary-card balance">
+                <h3>Balance</h3>
+                <p class="amount">฿5,200</p>
+            </div>
+            <div class="summary-card transaction">
+                <h3>Transaction</h3>
+                <p class="amount">฿2,200</p>
+            </div>
+        </div>
 
-            // Process transactions for display
-            const processedTransactions = rawTransactions.map(trans => ({
-                date: trans.date_time,
-                withdrawal: parseFloat((trans.withdrawal || '0').replace(/[^\d.-]/g, '')),
-                category: categoryList.find(c => c.id === parseInt(trans.category_id))?.name || 'Uncategorized',
-                categoryId: parseInt(trans.category_id) || 0
-            }));
-
-            // Process data for category chart
-            const categoryData = processedTransactions.reduce((acc, trans) => {
-                if (trans.categoryId && trans.withdrawal > 0) {
-                    if (!acc[trans.category]) {
-                        acc[trans.category] = 0;
-                    }
-                    acc[trans.category] += trans.withdrawal;
-                }
-                return acc;
-            }, {});
-
-            // Process data for daily spending chart
-            const dailyData = processedTransactions.reduce((acc, trans) => {
-                const date = trans.date.split(' ')[0];
-                if (trans.withdrawal > 0) {
-                    if (!acc[date]) {
-                        acc[date] = 0;
-                    }
-                    acc[date] += trans.withdrawal;
-                }
-                return acc;
-            }, {});
-
-            // Create category pie chart
-            const categoryChart = new Chart(document.getElementById('categoryChart'), {
-                type: 'pie',
-                data: {
-                    labels: Object.keys(categoryData),
-                    datasets: [{
-                        data: Object.values(categoryData),
-                        backgroundColor: [
-                            '#FF6384',
-                            '#36A2EB',
-                            '#FFCE56',
-                            '#4BC0C0',
-                            '#9966FF',
-                            '#FF9F40'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Spending by Category'
-                        }
-                    }
-                }
-            });
-
-            // Create daily spending line chart
-            const dailyChart = new Chart(document.getElementById('dailySpendingChart'), {
-                type: 'line',
-                data: {
-                    labels: Object.keys(dailyData),
-                    datasets: [{
-                        label: 'Daily Spending',
-                        data: Object.values(dailyData),
-                        borderColor: '#36A2EB',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Daily Spending Trend'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Amount (฿)'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Initialize charts when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            if (document.getElementById('categoryChart')) {
-                initializeCharts();
-            }
-        });
-    </script>
-    {% endif %}
-
-    <div class="footer">
-        AI Finance Manager © 2025
+        <!-- Budgeting Section -->
+        <div class="budgeting-section">
+            <h2>Budgeting</h2>
+            <div class="budget-buttons">
+                <a href="/expenses" class="budget-button">
+                    Expense Tracker
+                </a>
+                <a href="#" class="budget-button">
+                    Budget Planning
+                </a>
+                <a href="/ai" class="budget-button">
+                    AI for financial Planning
+                </a>
+                <a href="#" class="budget-button">
+                    Price compare function
+                </a>
+            </div>
+        </div>
     </div>
 </body>
 </html>
