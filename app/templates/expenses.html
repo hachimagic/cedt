@@ -122,7 +122,7 @@
                 <select class="form-control" name="category">
                   <option value="">Select Category</option>
                   {% for category in categories %}
-                    <option value="{{ category.id }}" {% if trans.category_id|string == category.id|string %}selected{% endif %}>
+                    <option value="{{ category.id }}" {% if trans.category == category.name or trans.category_id|string == category.id|string %}selected{% endif %}>
                       {{ category.name }}
                     </option>
                   {% endfor %}
@@ -439,12 +439,24 @@ document.addEventListener('DOMContentLoaded', function() {
           category_id: row.querySelector('select[name="category"]').value
         }));
 
-        const response = await fetch('/expenses/save_transcript', {
+        // Get category data from chart
+        const categoryData = {};
+        const chart = Chart.getChart('categoryChart');
+        if (chart) {
+          chart.data.labels.forEach((label, index) => {
+            categoryData[label] = chart.data.datasets[0].data[index];
+          });
+        }
+
+        const response = await fetch('/ai/save_financial_profile', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ transactions })
+          body: JSON.stringify({
+            transactions,
+            categories: categoryData
+          })
         });
 
         const data = await response.json();

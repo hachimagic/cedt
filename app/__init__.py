@@ -6,7 +6,13 @@ login_manager = LoginManager()
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object('config.Config')
+    from config import Config
+    app.config.from_object(Config)
+    app.config['UPLOAD_FOLDER'] = 'uploads'
+    app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB
+    app.config['UPLOAD_FOLDER'] = 'uploads'
+    app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
     
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'

@@ -96,25 +96,24 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const expensesData = {
-    labels: ['Food', 'Clothing', 'Health Care', 'Utilities', 'Housing Rent', 'Others'],
-    datasets: [{
-      data: [20, 15, 15, 15, 20, 15],
-      backgroundColor: [
-        '#FFB800', // Food (Yellow)
-        '#FF1493', // Clothing (Deep Pink)
-        '#00CED1', // Health Care (Dark Turquoise)
-        '#00BFFF', // Utilities (Deep Sky Blue)
-        '#9932CC', // Housing Rent (Dark Orchid)
-        '#90EE90'  // Others (Light Green)
-      ],
-      borderWidth: 0
-    }]
-  };
-
-  new Chart(document.getElementById('expensesChart'), {
+  // Initialize empty chart
+  const expensesChart = new Chart(document.getElementById('expensesChart'), {
     type: 'doughnut',
-    data: expensesData,
+    data: {
+      labels: [],
+      datasets: [{
+        data: [],
+        backgroundColor: [
+          '#FFB800', // Food (Yellow)
+          '#FF1493', // Clothing (Deep Pink)
+          '#00CED1', // Health Care (Dark Turquoise)
+          '#00BFFF', // Utilities (Deep Sky Blue)
+          '#9932CC', // Housing Rent (Dark Orchid)
+          '#90EE90'  // Others (Light Green)
+        ],
+        borderWidth: 0
+      }]
+    },
     options: {
       cutout: '75%',
       responsive: true,
@@ -146,13 +145,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  fetch('/ai/analysis/ai')
+  // Load and update chart data
+  console.log('Initializing expenses chart...');
+  fetch('/ai/analysis/overview')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to load chart data');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Chart data loaded:', data);
+      if (!data.categories || Object.keys(data.categories).length === 0) {
+        console.warn('No category data found');
+        return;
+      }
+      
+      // Update chart with real data
+      // Update chart with real data
+      expensesChart.data.labels = Object.keys(data.categories);
+      expensesChart.data.datasets[0].data = Object.values(data.categories);
+      expensesChart.update();
+      
+      // Load AI advice
+      return fetch('/ai/analysis/ai');
+    })
     .then(response => response.json())
     .then(data => {
       document.getElementById('aiAdvice').innerHTML = data.analysis.replace(/\n/g, '<br>');
     })
     .catch(error => {
-      document.getElementById('aiAdvice').textContent = 'Error loading AI advice. Please try again.';
+      console.error('Error:', error);
+      document.getElementById('aiAdvice').textContent = 'Error loading financial data. Please try again.';
     });
 
   // Handle currency formatting for all financial inputs
