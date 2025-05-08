@@ -94,7 +94,7 @@ def generate_ai_advice(analysis):
 def analysis_overview():
     from app.models.transaction import Transaction
     
-    # Initialize default categories
+    # Initialize category totals
     categories = defaultdict(float)
     
     # Check if user is authenticated
@@ -104,12 +104,23 @@ def analysis_overview():
         
         # Analyze transactions
         for t in transactions:
-            if t.category:
-                amount = float(t.withdrawal.replace(',', '')) if t.withdrawal else 0
-                categories[t.category] += amount
+            # Ensure transaction is categorized
+            if not t.category:
+                t.auto_categorize()
+            
+            # Process withdrawals (expenses)
+            if t.withdrawal:
+                try:
+                    withdrawal = float(t.withdrawal.replace(',', ''))
+                    categories[t.category] += withdrawal
+                except ValueError:
+                    pass
+    
+    # Convert to format suitable for chart
+    chart_data = dict(categories)
     
     return jsonify({
-        'categories': dict(categories)
+        'categories': chart_data
     })
 
 @ai_bp.route('/analysis/categories')
@@ -153,5 +164,54 @@ def save_financial_profile():
 
         return jsonify({'message': 'Financial profile saved successfully'})
 
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@ai_bp.route('/thai_advisor', methods=['POST'])
+@login_required
+def thai_advisor():
+    try:
+        data = request.get_json()
+        question = data.get('question')
+        if not question:
+            return jsonify({'error': 'No question provided'}), 400
+        
+        # Get user profile
+        profile = current_user.profile
+        if not profile:
+            return jsonify({'error': 'User profile not found'}), 400
+        
+        # Format prompt
+        prompt = f"""ระบบ: คุณคือที่ปรึกษาทางการเงิน พูดภาษาไทยเท่านั้น ให้คำแนะนำเฉพาะบุคคล
+
+ข้อมูลผู้ใช้:
+- รายได้: ฿{profile.get('salary', 0)}
+- อาชีพ: {profile.get('occupation', 'ไม่ระบุ')}
+- หนี้:"""
+        
+        for debt in profile.get('debts', []):
+            prompt += f"\n  - {debt['type']} ฿{debt['amount']} ดอกเบี้ย {debt['interest']}%"
+        
+        prompt += f"\n- พฤติกรรมการใช้เงินสด: {profile.get('cash_behavior', 'ไม่ระบุ')}\n\n"
+        prompt += f"คำถาม: {question}"
+        
+        # Call AI API (using OpenAI as default)
+        import openai
+        openai.api_key = os.getenv('OPENAI_API_KEY')
+        
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful financial advisor that speaks only Thai."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=500
+        )
+        
+        return jsonify({
+            'response': response['choices'][0]['message']['content']
+        })
+        
     except Exception as e:
         return jsonify({'error': str(e)}), 500

@@ -19,7 +19,7 @@
 
   <div class="expenses-overview">
     <h2>Total Expenses</h2>
-    <div class="chart-container">
+    <div class="chart-container" style="height: 300px;">
       <canvas id="expensesChart"></canvas>
     </div>
   </div>
@@ -91,7 +91,90 @@
       Loading AI advice...
     </div>
   </div>
+
+  <div class="thai-ai-advisor">
+    <h2>ที่ปรึกษาทางการเงิน AI</h2>
+    <form id="thaiAiForm" class="financial-form">
+      <textarea 
+        id="thaiAiQuestion" 
+        class="financial-input" 
+        placeholder="กรุณากรอกคำถามของคุณที่นี่..."
+        required
+      ></textarea>
+      <button type="submit" class="save-button">
+        <i class="fas fa-paper-plane"></i>
+        ส่งคำถาม
+      </button>
+    </form>
+    <div id="thaiAiResponse" class="analysis-results" style="display: none;">
+      <h3>คำตอบจากที่ปรึกษา AI</h3>
+      <div class="response-content"></div>
+    </div>
+    <div id="continueDashboard" style="display: none; text-align: center; margin-top: 20px;">
+      <a href="/dashboard" class="save-button">ไปยังแดชบอร์ด</a>
+    </div>
+  </div>
 </div>
+
+<script>
+document.getElementById('thaiAiForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const question = document.getElementById('thaiAiQuestion').value;
+  
+  fetch('/ai/thai_advisor', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      question: question
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    const responseDiv = document.getElementById('thaiAiResponse');
+    responseDiv.querySelector('.response-content').innerHTML = data.response.replace(/\n/g, '<br>');
+    responseDiv.style.display = 'block';
+    
+    // Show continue to dashboard button after first question
+    document.getElementById('continueDashboard').style.display = 'block';
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('เกิดข้อผิดพลาดในการส่งคำถาม กรุณาลองใหม่');
+  });
+});
+</script>
+
+<style>
+.thai-ai-advisor {
+  margin: 30px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.financial-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.financial-form textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  resize: vertical;
+}
+
+.financial-form button {
+  align-self: flex-end;
+}
+</style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -104,12 +187,11 @@ document.addEventListener('DOMContentLoaded', function() {
       datasets: [{
         data: [],
         backgroundColor: [
-          '#FFB800', // Food (Yellow)
-          '#FF1493', // Clothing (Deep Pink)
-          '#00CED1', // Health Care (Dark Turquoise)
-          '#00BFFF', // Utilities (Deep Sky Blue)
-          '#9932CC', // Housing Rent (Dark Orchid)
-          '#90EE90'  // Others (Light Green)
+          '#FFB800', // Food/Groceries (Yellow)
+          '#00BFFF', // Utilities (Blue)
+          '#FF6347', // Transportation (Tomato)
+          '#32CD32', // Savings (Lime Green)
+          '#9932CC', // Miscellaneous (Dark Orchid)
         ],
         borderWidth: 0
       }]

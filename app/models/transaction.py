@@ -138,19 +138,34 @@ class Transaction:
         
         # Mapping of patterns to categories
         CATEGORY_MAPPING = {
-            "Savings": [
-                "(iorswt)", "โอนเงินออก", 
-                "(iorsdt)", "เงินโอนเข้า",
-                "พร้อมเพย์"
-            ],
             "Food/Groceries": [
-                "(nbswp)", "(cgswp)"
+                "supermarket", "grocery", "restaurant", "cafe", "food", "bakery",
+                "coffee", "dining", "market", "takeout", "delivery", "convenience",
+                "7-eleven", "big c", "tesco", "lotus", "makro", "tops", "foodland",
+                "canteen", "food court", "foodcourt", "foodpanda", "grab food",
+                "kfc", "mcdonalds", "pizza", "burger", "sushi", "noodle", "rice",
+                "beverage", "drink", "snack", "dessert", "ice cream", "chocolate"
             ],
             "Utilities": [
-                "(morpsw)", "(nmpswp)"
+                "electric", "water", "internet", "phone", "mobile", "utility",
+                "bill", "payment", "ptt", "true", "ais", "dtac", "3bb", "tot",
+                "cable tv", "television", "tv", "streaming", "netflix", "spotify",
+                "youtube", "disney+", "prime video", "electricity", "power",
+                "gas", "petrol", "lpg", "ngv", "piped gas", "utility bill"
             ],
             "Transportation": [
-                "edc mrt", "mrt"
+                "bus", "train", "mrt", "bts", "taxi", "grab", "bolt", "airport",
+                "rail", "transport", "fuel", "gasoline", "petrol", "parking",
+                "toll", "expressway", "highway", "car", "motorcycle", "bike",
+                "bicycle", "rental", "uber", "lyft", "commute", "travel",
+                "airline", "flight", "boat", "ferry", "subway", "metro"
+            ],
+            "Savings": [
+                "transfer", "withdraw", "deposit", "savings", "investment",
+                "interest", "dividend", "fund", "stock", "bond", "mutual fund",
+                "retirement", "pension", "insurance", "premium", "policy",
+                "wealth", "asset", "portfolio", "bank", "account", "atm",
+                "withdrawal", "deposit", "โอนเงิน", "เงินโอน", "พร้อมเพย์"
             ]
         }
 

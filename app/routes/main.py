@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, jsonify
-from flask_login import current_user
+from flask import Blueprint, render_template, jsonify, request, redirect, url_for
+from flask_login import current_user, login_required
 from flask_wtf.csrf import generate_csrf
 from datetime import datetime
 from ..models.transaction import Transaction
+from ..models.user import User
 
 main_bp = Blueprint('main', __name__)
 
@@ -37,3 +38,43 @@ def index():
         transactions=transactions,
         categories=categories
     )
+
+@main_bp.route('/user/background', methods=['GET', 'POST'])
+@login_required
+def user_background():
+    if request.method == 'POST':
+        # Get form data
+        salary = request.form.get('salary')
+        occupation = request.form.get('occupation')
+        debt_types = request.form.getlist('debt_type[]')
+        debt_amounts = request.form.getlist('debt_amount[]')
+        debt_interests = request.form.getlist('debt_interest[]')
+        cash_behavior = request.form.get('cash_behavior')
+        
+        # Process debts into list of dicts
+        debts = []
+        for i in range(len(debt_types)):
+            debts.append({
+                'type': debt_types[i],
+                'amount': float(debt_amounts[i]),
+                'interest': float(debt_interests[i])
+            })
+        
+        # Save to user profile
+        current_user.profile = {
+            'salary': float(salary),
+            'occupation': occupation,
+            'debts': debts,
+            'cash_behavior': cash_behavior
+        }
+        current_user.save()
+        
+        return redirect(url_for('ai.overview'))
+    
+    return render_template('user_background.html')
+
+def get_user_profile(user_id):
+    user = User.query.get(user_id)
+    if user and user.profile:
+        return user.profile
+    return None

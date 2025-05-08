@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>กรอกข้อมูลพื้นฐานของคุณ</h2>
+    <form method="POST" action="{{ url_for('main.user_background') }}">
+        <div class="form-group">
+            <label for="salary">รายได้ต่อเดือน (บาท)</label>
+            <input type="number" class="form-control financial-input" id="salary" name="salary" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="occupation">อาชีพ</label>
+            <input type="text" class="form-control financial-input" id="occupation" name="occupation" required>
+        </div>
+        
+        <div class="form-group">
+            <label>หนี้สิน</label>
+            <div id="debt-container">
+                <div class="debt-entry">
+                    <input type="text" class="form-control financial-input" name="debt_type[]" placeholder="ประเภทหนี้" required>
+                    <input type="number" class="form-control financial-input" name="debt_amount[]" placeholder="จำนวนเงิน" required>
+                    <input type="number" class="form-control financial-input" name="debt_interest[]" placeholder="ดอกเบี้ย (%)" required>
+                </div>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="addDebtField()">เพิ่มหนี้</button>
+        </div>
+        
+        <div class="form-group">
+            <label for="cash_behavior">พฤติกรรมการใช้เงินสด</label>
+            <textarea class="form-control financial-input" id="cash_behavior" name="cash_behavior" rows="3" required></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-primary save-button">บันทึกและดำเนินการต่อ</button>
+    </form>
+</div>
+
+<script>
+function addDebtField() {
+    const container = document.getElementById('debt-container');
+    const newEntry = document.createElement('div');
+    newEntry.className = 'debt-entry mt-2';
+    newEntry.innerHTML = `
+        <input type="text" class="form-control financial-input" name="debt_type[]" placeholder="ประเภทหนี้" required>
+        <input type="number" class="form-control financial-input" name="debt_amount[]" placeholder="จำนวนเงิน" required>
+        <input type="number" class="form-control financial-input" name="debt_interest[]" placeholder="ดอกเบี้ย (%)" required>
+    `;
+    container.appendChild(newEntry);
+}
+</script>
+{% endblock %}

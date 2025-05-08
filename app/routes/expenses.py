@@ -211,6 +211,9 @@ def save_transcript():
                         extra='',
                         line_text=parsed.get('line_text', '')
                     )
+                    # Auto-categorize if no category was provided
+                    if not new_transaction.category_id:
+                        new_transaction.auto_categorize()
                     saved_transactions.append(new_transaction)
                 else:
                     # For existing transactions, update them
