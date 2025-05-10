@@ -89,6 +89,11 @@ class Transaction:
             # Create a new file with UUID
             file_uuid = str(uuid.uuid4())
             file_path = dir_path / f"{user_id}_{file_uuid}.csv"
+            
+        # Ensure parent directory exists
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        logger.info(f"Will save transactions to: {file_path}")
         
         try:
             with open(file_path, 'w', newline='', encoding='utf-8') as f:
@@ -102,7 +107,13 @@ class Transaction:
                 writer.writeheader()
                 
                 for transaction in transactions:
-                    row = {field: getattr(transaction, field) for field in fieldnames}
+                    row = {}
+                    for field in fieldnames:
+                        value = getattr(transaction, field)
+                        # Convert datetime objects to string
+                        if isinstance(value, datetime):
+                            value = value.strftime('%d/%m/%y %H:%M')
+                        row[field] = str(value) if value is not None else ''
                     writer.writerow(row)
                     
             logger.info(f"Successfully saved {len(transactions)} transactions to {file_path}")

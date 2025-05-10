@@ -5,9 +5,10 @@ import os
 import json
 import requests
 import re
+from collections import defaultdict
 
 # OpenRouter configuration
-OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = "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"
 OPENROUTER_MODEL_NAME = "deepseek/deepseek-chat-v3-0324"
 
 ai_bp = Blueprint('ai', __name__)
@@ -106,34 +107,105 @@ def generate_ai_advice(analysis):
 @ai_bp.route('/analysis/overview')
 def analysis_overview():
     from app.models.transaction import Transaction
+    from datetime import datetime, timedelta
+    from pathlib import Path
+    import logging
+    import csv
     
-    # Initialize category totals
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+    
+    # Initialize data structures
     categories = defaultdict(float)
+    daily_spending = {}
     
     # Check if user is authenticated
     if current_user.is_authenticated:
-        # Get user's transactions
-        transactions = Transaction.get_user_transactions(current_user.id)
+        logger.info(f"Loading transactions for user {current_user.id}")
         
-        # Analyze transactions
-        for t in transactions:
-            # Ensure transaction is categorized
-            if not t.category:
-                t.auto_categorize()
+        # List all files in user_transactions directory
+        user_transactions_dir = Path('user_transactions')
+        
+        if user_transactions_dir.exists():
+            # Look specifically for files with user_id prefix
+            files = list(user_transactions_dir.glob(f'{current_user.id}_*.csv'))
+            logger.info(f"Found {len(files)} transaction files for user {current_user.id}")
             
-            # Process withdrawals (expenses)
-            if t.withdrawal:
+            # Process each CSV file for daily spending
+            for file in files:
                 try:
+                    with open(file, 'r', encoding='utf-8') as csvfile:
+                        reader = csv.DictReader(csvfile)
+                        for row in reader:
+                            # Parse the date from date_time field
+                            try:
+                                date_str = row.get('date_time', '')
+                                if isinstance(date_str, str):
+                                    # Try different date formats
+                                    for fmt in ['%d/%m/%y %H:%M', '%Y-%m-%d %H:%M:%S', '%Y-%m-%d']:
+                                        try:
+                                            date = datetime.strptime(date_str, fmt).strftime('%Y-%m-%d')
+                                            break
+                                        except ValueError:
+                                            continue
+                                    else:
+                                        # If no format matches, try to extract date part
+                                        date = date_str.split(' ')[0]
+                                else:
+                                    date = datetime.now().strftime('%Y-%m-%d')
+                            except Exception as e:
+                                logger.error(f"Error parsing date '{date_str}': {str(e)}")
+                                date = datetime.now().strftime('%Y-%m-%d')
+                            withdrawal = float(row.get('withdrawal', '0').replace(',', '')) if row.get('withdrawal') else 0
+                            deposit = float(row.get('deposit', '0').replace(',', '')) if row.get('deposit') else 0
+                            
+                            # Calculate net spending for the day
+                            net_spending = withdrawal - deposit
+                            
+                            if date in daily_spending:
+                                daily_spending[date] += net_spending
+                            else:
+                                daily_spending[date] = net_spending
+                except Exception as e:
+                    logger.error(f"Error processing file {file}: {str(e)}")
+        else:
+            logger.warning("user_transactions directory does not exist")
+        
+        # Get transactions for category data
+        transactions = Transaction.get_user_transactions(current_user.id)
+        logger.info(f"Loaded {len(transactions)} transactions")
+        
+        # Process transactions for categories
+        for t in transactions:
+            try:
+                if t.withdrawal and t.withdrawal.strip():
                     withdrawal = float(t.withdrawal.replace(',', ''))
+                    # Ensure transaction has a category
+                    if not t.category:
+                        t.auto_categorize()
+                    # Skip if category is still empty after auto-categorization
+                    if not t.category:
+                        continue
+                    # Add to category total
                     categories[t.category] += withdrawal
-                except ValueError:
-                    pass
+                    logger.debug(f"Added {withdrawal} to category {t.category}")
+            except Exception as e:
+                logger.error(f"Error processing transaction {t.id}: {str(e)}")
+                continue
+        
+        # Remove categories with 0 value
+        categories = {k: v for k, v in categories.items() if v > 0}
+        
+        logger.info(f"Processed categories: {dict(categories)}")
+        logger.info(f"Processed daily spending: {daily_spending}")
     
-    # Convert to format suitable for chart
-    chart_data = dict(categories)
+    # Sort daily spending by date
+    sorted_daily_spending = dict(sorted(daily_spending.items()))
     
+    # Convert to format suitable for charts
     return jsonify({
-        'categories': chart_data
+        'categories': dict(categories),
+        'daily_spending': sorted_daily_spending
     })
 
 @ai_bp.route('/analysis/categories')
@@ -213,6 +285,10 @@ def thai_advisor():
                 'data': None
             }), 400
 
+        # Ensure required directories exist
+        os.makedirs('user_data', exist_ok=True)
+        os.makedirs('user_transactions', exist_ok=True)
+
         # Get user profile from file
         profile_path = f"user_data/user_{current_user.id}_financial_profile.json"
         if not os.path.exists(profile_path):
@@ -227,32 +303,37 @@ def thai_advisor():
         transactions = []
         transaction_summary = {"income": 0, "expenses": 0, "categories": {}}
         
-        # List all transaction files for the user
-        transaction_files = [f for f in os.listdir('user_transactions') 
-                           if f.startswith(f"{current_user.id}_")]
+        try:
+            # List all transaction files for the user
+            transaction_files = [f for f in os.listdir('user_transactions') 
+                               if f.startswith(f"{current_user.id}_")]
+            
+            print(f"[{datetime.now()}] Found {len(transaction_files)} transaction files for user {current_user.id}")
         
-        print(f"[{datetime.now()}] Found {len(transaction_files)} transaction files for user {current_user.id}")
-        
-        # Read each transaction file
-        for file_name in transaction_files:
-            file_path = os.path.join('user_transactions', file_name)
-            try:
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    import csv
-                    reader = csv.DictReader(f)
-                    for row in reader:
-                        transactions.append(row)
-                        # Update summary
-                        amount = float(row.get('amount', 0))
-                        if row.get('type') == 'income':
-                            transaction_summary["income"] += amount
-                        else:
-                            transaction_summary["expenses"] += amount
-                            category = row.get('category', 'Other')
-                            transaction_summary["categories"][category] = \
-                                transaction_summary["categories"].get(category, 0) + amount
-            except Exception as e:
-                print(f"[{datetime.now()}] Error reading transaction file {file_path}: {str(e)}")
+            # Read each transaction file
+            for file_name in transaction_files:
+                file_path = os.path.join('user_transactions', file_name)
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        import csv
+                        reader = csv.DictReader(f)
+                        for row in reader:
+                            transactions.append(row)
+                            # Update summary
+                            amount = float(row.get('amount', 0))
+                            if row.get('type') == 'income':
+                                transaction_summary["income"] += amount
+                            else:
+                                transaction_summary["expenses"] += amount
+                                category = row.get('category', 'Other')
+                                transaction_summary["categories"][category] = \
+                                    transaction_summary["categories"].get(category, 0) + amount
+                except Exception as e:
+                    print(f"[{datetime.now()}] Error reading transaction file {file_path}: {str(e)}")
+                    continue  # Continue with other files if one fails
+        except Exception as e:
+            print(f"[{datetime.now()}] Error accessing user_transactions directory: {str(e)}")
+            # Continue without transaction data
 
         # Verify we can read the profile
         try:
@@ -262,7 +343,7 @@ def thai_advisor():
             print(f"[{datetime.now()}] Error reading profile: {str(e)}")
             return jsonify({
                 'success': False,
-                'message': 'Error reading profile data',
+                'message': 'Error reading profile data. Please try saving your profile again.',
                 'data': None
             }), 500
 
@@ -302,14 +383,73 @@ def thai_advisor():
             "X-Title": "Financial Advisor"
         }
 
+        system_prompt = """คุณคือที่ปรึกษาทางการเงิน ให้คำแนะนำในรูปแบบที่มีโครงสร้างดังนี้:
+
+━━━━━━━━━━ 1. หนี้และการจัดการ ━━━━━━━━━━
+
+• วิเคราะห์ภาระหนี้ปัจจุบัน:
+  [วิเคราะห์สถานะหนี้ปัจจุบัน]
+
+• แนะนำวิธีจัดการหนี้:
+  [ให้คำแนะนำการจัดการหนี้]
+
+• การปรับโครงสร้างหนี้:
+  [เสนอแนะถ้าจำเป็น]
+
+━━━━━━━━━━ 2. การออมและการลงทุน ━━━━━━━━━━
+
+• สถานะการออมปัจจุบัน:
+  [วิเคราะห์อัตราการออม]
+
+• วิธีเพิ่มเงินออม:
+  [แนะนำวิธีการออมที่เหมาะสม]
+
+• ช่องทางการลงทุน:
+  [เสนอแนะการลงทุนที่เหมาะสม]
+
+━━━━━━━━━━ 3. การใช้จ่ายรายเดือน ━━━━━━━━━━
+
+• การวิเคราะห์ค่าใช้จ่าย:
+  [วิเคราะห์รูปแบบการใช้จ่าย]
+
+• รายการที่ควรปรับลด:
+  [ระบุค่าใช้จ่ายที่ควรลด]
+
+• วิธีการประหยัด:
+  [แนะนำวิธีประหยัด]
+
+━━━━━━━━━━ 4. เป้าหมายทางการเงิน ━━━━━━━━━━
+
+• การวิเคราะห์เป้าหมาย:
+  [วิเคราะห์ความเป็นไปได้]
+
+• แผนการเงิน:
+  [แนะนำแผนระยะสั้น/ยาว]
+
+• การปรับเป้าหมาย:
+  [เสนอแนะการปรับถ้าจำเป็น]
+
+━━━━━━━━━━ 5. คำแนะนำเพิ่มเติม ━━━━━━━━━━
+
+• ข้อเสนอแนะพิเศษ:
+  [คำแนะนำเฉพาะบุคคล]
+
+• เครื่องมือทางการเงิน:
+  [แนะนำเครื่องมือที่เหมาะสม]
+
+• ขั้นตอนต่อไป:
+  [ระบุสิ่งที่ควรทำต่อไป]
+
+กรุณาตอบทุกหัวข้อตามข้อมูลที่มี ถ้าไม่มีข้อมูลในส่วนใด ให้แนะนำวิธีการจัดการทั่วไป โดยรักษารูปแบบการจัดวางและการเว้นบรรทัดตามที่กำหนด"""
+
         request_data = {
             "model": OPENROUTER_MODEL_NAME,
             "messages": [
-                {"role": "system", "content": "คุณเป็นที่ปรึกษาทางการเงิน ตอบสั้นๆเป็นภาษาไทย"},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt}
             ],
             "temperature": 0.7,
-            "max_tokens": 300
+            "max_tokens": 800
         }
 
         print(f"[{datetime.now()}] Sending request to OpenRouter API...")
@@ -332,34 +472,58 @@ def thai_advisor():
                 return None, f"Error parsing response: {str(e)}"
 
         # First attempt with full prompt
-        response = requests.post(
-            "https://openrouter.ai/api/v1/chat/completions",
-            headers=headers,
-            json=request_data,
-            timeout=30
-        )
-
-        content, error = parse_response(response)
-
-        # Retry with simplified prompt if necessary
-        if not content or len(content) < 10:
-            print("First attempt gave short/empty response, trying with simplified prompt...")
-            request_data["messages"] = [
-                {"role": "system", "content": "ตอบคำถามสั้นๆเป็นภาษาไทย"},
-                {"role": "user", "content": question}
-            ]
+        try:
             response = requests.post(
                 "https://openrouter.ai/api/v1/chat/completions",
                 headers=headers,
                 json=request_data,
                 timeout=30
             )
+            
+            print(f"[{datetime.now()}] OpenRouter API response status: {response.status_code}")
+            
+            if response.status_code != 200:
+                error_msg = f"OpenRouter API error: {response.status_code}"
+                try:
+                    error_data = response.json()
+                    if 'error' in error_data:
+                        error_msg = f"OpenRouter API error: {error_data['error'].get('message', 'Unknown error')}"
+                except:
+                    pass
+                raise Exception(error_msg)
+
             content, error = parse_response(response)
 
-        if error:
+            # Retry with simplified prompt if necessary
+            if not content or len(content) < 10:
+                print(f"[{datetime.now()}] First attempt gave short/empty response, trying with simplified prompt...")
+                request_data["messages"] = [
+                    {"role": "system", "content": "คุณคือที่ปรึกษาทางการเงิน กรุณาให้คำแนะนำในรูปแบบที่มีหัวข้อชัดเจน"},
+                    {"role": "user", "content": question}
+                ]
+                response = requests.post(
+                    "https://openrouter.ai/api/v1/chat/completions",
+                    headers=headers,
+                    json=request_data,
+                    timeout=30
+                )
+                content, error = parse_response(response)
+
+            if error:
+                raise Exception(error)
+
+        except requests.exceptions.RequestException as e:
+            print(f"[{datetime.now()}] Network error with OpenRouter API: {str(e)}")
             return jsonify({
                 'success': False,
-                'message': error,
+                'message': 'Network error connecting to AI service. Please try again.',
+                'data': None
+            }), 500
+        except Exception as e:
+            print(f"[{datetime.now()}] Error with OpenRouter API: {str(e)}")
+            return jsonify({
+                'success': False,
+                'message': str(e),
                 'data': None
             }), 500
 
@@ -372,6 +536,12 @@ def thai_advisor():
         content = re.sub(r'\n\s*\n\s*\n', '\n\n', content)  # Multiple newlines to double newline
         content = content.strip()
         content = re.sub(r'([ก-๙])\s+(?=[ก-๙])', r'\1', content)  # Final Thai text cleanup
+        
+        # Add visual separators and ensure consistent spacing
+        content = re.sub(r'(\d+\.\s*[^\n]+):', r'━━━━━━━━━━ \1 ━━━━━━━━━━', content)  # Add section separators
+        content = re.sub(r'([•\-]\s*[^\n]+:)', r'\n\1', content)  # Add newline before bullet points
+        content = re.sub(r':\s*([^\n])', r':\n  \1', content)  # Add newline and indent after colons
+        content = re.sub(r'(?<=\n)((?![•\-]).+)(?=\n)', r'  \1', content)  # Indent non-bullet point lines
 
         if not content:
             return jsonify({

@@ -3,11 +3,13 @@ from flask_login import login_required, current_user
 import os
 import uuid
 import pdfplumber
+import fitz  # Import PyMuPDF
 import traceback
 from datetime import datetime
 from pathlib import Path
 from ..models.transaction import Transaction
 from ..utils.pdf_parser import parse_transaction_line
+import csv
 
 # Temporary in-memory categories
 categories = [
@@ -34,44 +36,78 @@ def index():
     import logging
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
-    
+
     logger.info(f"Index route: Loading transactions for user {current_user.id}")
-    
+
     # List all files in user_transactions directory
-    import os
-    import glob
-    from pathlib import Path
-    
     user_transactions_dir = Path('user_transactions')
+    daily_spending = {}
+
     if user_transactions_dir.exists():
         # Look specifically for files with user_id prefix
         files = list(user_transactions_dir.glob(f'{current_user.id}_*.csv'))
         logger.info(f"Found {len(files)} transaction files for user {current_user.id}: {files}")
+
+        # Process each CSV file
+        for file in files:
+            try:
+                with open(file, 'r', encoding='utf-8') as csvfile:
+                    reader = csv.DictReader(csvfile)
+                    for row in reader:
+                        date = row.get('date_time', '').split(' ')[0]  # Extract date only
+                        withdrawal = float(row.get('withdrawal', '0').replace(',', '')) if row.get('withdrawal') else 0
+                        deposit = float(row.get('deposit', '0').replace(',', '')) if row.get('deposit') else 0
+
+                        # Calculate net spending for the day
+                        net_spending = withdrawal - deposit
+
+                        if date in daily_spending:
+                            daily_spending[date] += net_spending
+                        else:
+                            daily_spending[date] = net_spending
+            except Exception as e:
+                logger.error(f"Error processing file {file}: {str(e)}")
     else:
         logger.warning("user_transactions directory does not exist")
-    
+
+    # Sort daily spending by date
+    sorted_daily_spending = dict(sorted(daily_spending.items()))
+
     # Get transactions for the current user
     transactions = Transaction.get_user_transactions(current_user.id)
-    
+
     logger.info(f"Loaded {len(transactions)} transactions for user {current_user.id}")
-    
+
     # Calculate totals
     total_deposits = sum(float(t.deposit.replace(',', '')) if t.deposit and t.deposit.strip() else 0 for t in transactions)
     total_withdrawals = sum(float(t.withdrawal.replace(',', '')) if t.withdrawal and t.withdrawal.strip() else 0 for t in transactions)
     current_balance = float(transactions[-1].balance.replace(',', '')) if transactions else 0
-    
+
     logger.info(f"Calculated totals: deposits={total_deposits}, withdrawals={total_withdrawals}, balance={current_balance}")
-    
-    # Print debug information about each transaction
-    for i, t in enumerate(transactions):
-        logger.debug(f"Transaction {i+1}: {t.__dict__}")
-    
+
+    # Calculate total spending for each category
+    category_totals = {category['id']: 0 for category in categories}
+    for transaction in transactions:
+        category_id = transaction.category_id
+        withdrawal = float(transaction.withdrawal.replace(',', '')) if transaction.withdrawal else 0
+        if category_id in category_totals:
+            category_totals[category_id] += withdrawal
+
+    # Update categories with total spending
+    for category in categories:
+        category['total'] = category_totals.get(category['id'], 0)
+
+    # Debug log for daily spending and categories
+    logger.debug(f"Daily spending data: {sorted_daily_spending}")
+    logger.debug(f"Categories data: {categories}")
+
     return render_template('expenses.html', 
                          transactions=transactions,
                          categories=categories,
                          total_deposits=total_deposits,
                          total_withdrawals=total_withdrawals,
-                         current_balance=current_balance)
+                         current_balance=current_balance,
+                         daily_spending=sorted_daily_spending)
 
 @expenses_bp.route('/preview_transcript', methods=['POST'])
 @login_required
@@ -86,7 +122,11 @@ def preview_transcript():
         return redirect(url_for('expenses.index'))
 
     if file and file.filename.lower().endswith('.pdf'):
-        filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], file.filename)
+        # Ensure uploads directory exists
+        uploads_dir = Path(current_app.config['UPLOAD_FOLDER'])
+        uploads_dir.mkdir(parents=True, exist_ok=True)
+        
+        filepath = uploads_dir / file.filename
         file.save(filepath)
 
         parsed_transactions = []
@@ -102,38 +142,40 @@ def preview_transcript():
                 encoding = chardet.detect(raw_data)['encoding']
                 print(f"Detected encoding: {encoding}")
             
-            # Try multiple extraction methods
-            page_text = None
-            methods = [
-                ('pdfplumber', lambda: pdfplumber.open(filepath)),
-                ('PyMuPDF', lambda: fitz.open(filepath))
-            ]
-            
-            for method_name, open_func in methods:
+            # Try pdfplumber first
+            print("Attempting to extract text with pdfplumber...")
+            try:
+                with pdfplumber.open(filepath) as pdf:
+                    page_text = ""
+                    for page in pdf.pages:
+                        current_page_text = page.extract_text()
+                        print(f"Extracted text from page (pdfplumber):\n{current_page_text}")
+                        if current_page_text:
+                            if page_text and not page_text.endswith('\n'):
+                                page_text += '\n'
+                            page_text += current_page_text
+            except Exception as e:
+                print(f"pdfplumber extraction failed: {str(e)}")
+                print("Falling back to PyMuPDF...")
                 try:
-                    if method_name == 'pdfplumber':
-                        with open_func() as pdf:
-                            page_text = ""
-                            for page in pdf.pages:
-                                current_page_text = page.extract_text(x_tolerance=1, y_tolerance=1, encoding=encoding)
-                                if current_page_text:
-                                    # Add page separator if needed
-                                    if page_text and not page_text.endswith('\n'):
-                                        page_text += '\n'
-                                    page_text += current_page_text
-                    else:
-                        doc = open_func()
-                        page_text = ""
-                        for page in doc:
-                            page_text += page.get_text()
-                    print(f"Successfully extracted text using {method_name}")
-                    break
+                    doc = fitz.open(filepath)
+                    page_text = ""
+                    for page in doc:
+                        current_page_text = page.get_text()
+                        print(f"Extracted text from page (PyMuPDF):\n{current_page_text}")
+                        if current_page_text:
+                            if page_text and not page_text.endswith('\n'):
+                                page_text += '\n'
+                            page_text += current_page_text
+                    doc.close()
                 except Exception as e:
-                    print(f"Failed to extract text using {method_name}: {str(e)}")
+                    print(f"PyMuPDF extraction failed: {str(e)}")
                     page_text = None
-                
+
             if page_text is None:
                 print("All text extraction methods failed")
+                flash('Failed to extract text from PDF')
+                return redirect(url_for('expenses.index'))
                 
             if page_text:
                 # Process text with special handling for page breaks
@@ -163,7 +205,7 @@ def preview_transcript():
                             parsed['explanation'] = ''
                             parsed['category_id'] = 13  # Default to Miscellaneous
                             parsed['category'] = 'Miscellaneous'  # Default category
-                            parsed['transaction_type'] = parsed.get('transaction', '')
+                            parsed['transaction_type'] = parsed.get('transaction_type', '')
                             parsed['branch'] = parsed.get('branch', '')
                             parsed['extra'] = parsed.get('extra', '')
                             parsed['line_text'] = line
@@ -204,6 +246,10 @@ def preview_transcript():
             except Exception as e:
                 print(f"Error cleaning up file: {str(e)}")
 
+        # Initialize empty data structures for preview mode
+        daily_spending = {}
+        sorted_daily_spending = {}
+        
         return render_template('expenses.html', 
                              parsed_transactions=parsed_transactions,
                              failed_transactions=failed_transactions,
@@ -212,7 +258,8 @@ def preview_transcript():
                              preview_mode=True,
                              total_deposits=0,
                              total_withdrawals=0,
-                             current_balance=0)
+                             current_balance=0,
+                             daily_spending=sorted_daily_spending)
 
     flash('Invalid file type. Please upload a PDF.')
     return redirect(url_for('expenses.index'))
@@ -250,7 +297,7 @@ def save_transcript():
                 logger.debug(f"Transaction data: {parsed}")
                 
                 # Validate required fields
-                required_fields = ['date_time', 'transaction', 'details', 'withdrawal', 'deposit', 'balance']
+                required_fields = ['date_time', 'transaction_type', 'details', 'withdrawal', 'deposit', 'balance']
                 missing_fields = [field for field in required_fields if field not in parsed]
                 if missing_fields:
                     raise ValueError(f"Missing required fields: {', '.join(missing_fields)}")
@@ -269,24 +316,56 @@ def save_transcript():
                 date_formats = [
                     '%Y-%m-%d %H:%M:%S',  # Full datetime with seconds
                     '%Y-%m-%d %H:%M',     # Datetime without seconds
-                    '%d/%m/%y %H:%M'      # Short date format
+                    '%d/%m/%y %H:%M',     # Short date format
+                    '%d/%m/%Y %H:%M',     # Full year format
+                    '%d/%m/%y',           # Date only
+                    '%d/%m/%Y',           # Date only with full year
+                    '%Y-%m-%d'            # ISO date
                 ]
                 
                 parsed_date = None
+                date_str = parsed.get('date_time', '')
+                
+                # Try to parse with existing formats
                 for date_format in date_formats:
                     try:
-                        parsed_date = datetime.strptime(parsed['date_time'], date_format)
+                        parsed_date = datetime.strptime(date_str, date_format)
                         break
                     except ValueError:
                         continue
                 
+                # If still not parsed, try to extract date components
                 if parsed_date is None:
-                    raise ValueError(
-                        f"Invalid date format: {parsed['date_time']}. "
-                        "Supported formats: YYYY-MM-DD HH:MM:SS, YYYY-MM-DD HH:MM, or DD/MM/YY HH:MM"
-                    )
+                    try:
+                        # Extract components using regex
+                        import re
+                        date_pattern = r'(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})'
+                        time_pattern = r'(\d{1,2}):(\d{2})'
+                        
+                        date_match = re.search(date_pattern, date_str)
+                        time_match = re.search(time_pattern, date_str)
+                        
+                        if date_match:
+                            day, month, year = date_match.groups()
+                            # Convert 2-digit year to 4-digit
+                            if len(year) == 2:
+                                year = '20' + year
+                            
+                            # Get time components or use defaults
+                            hour, minute = time_match.groups() if time_match else ('00', '00')
+                            
+                            # Create datetime object
+                            parsed_date = datetime(int(year), int(month), int(day), 
+                                                 int(hour), int(minute))
+                    except Exception:
+                        pass
                 
-                parsed['date_time'] = parsed_date.isoformat()
+                if parsed_date is None:
+                    # If still can't parse, use current date/time
+                    parsed_date = datetime.now()
+                    logger.warning(f"Could not parse date '{date_str}', using current datetime")
+                
+                parsed['date_time'] = parsed_date.strftime('%d/%m/%y %H:%M')
                 
                 # Validate category
                 category_id = parsed.get('category_id')
@@ -305,7 +384,7 @@ def save_transcript():
                     id=str(uuid.uuid4()),
                     user_id=current_user.id,
                     date_time=parsed['date_time'],
-                    transaction_type=parsed['transaction'],
+                    transaction_type=parsed['transaction_type'],
                     details=parsed['details'],
                     withdrawal=parsed['withdrawal'],
                     deposit=parsed['deposit'],
@@ -341,8 +420,12 @@ def save_transcript():
             try:
                 # Generate a unique file identifier
                 file_id = str(uuid.uuid4())[:8]
+                # Ensure user_transactions directory exists
+                user_transactions_dir = Path('user_transactions')
+                user_transactions_dir.mkdir(parents=True, exist_ok=True)
+                
                 # Save to file with the pattern user_id_file_id.csv
-                file_path = Path('user_transactions') / f'{current_user.id}_{file_id}.csv'
+                file_path = user_transactions_dir / f'{current_user.id}_{file_id}.csv'
                 logger.info(f"Saving transactions to file: {file_path}")
                 
                 # Save with rollback protection
@@ -358,10 +441,18 @@ def save_transcript():
                     'count': 0
                 }), 500
 
+        # Convert failed transactions to a serializable format
+        serializable_failed = []
+        for failed in failed_transactions:
+            serializable_failed.append({
+                'line': str(failed.get('line', '')),
+                'error': str(failed.get('error', ''))
+            })
+
         result = {
             'message': f'Successfully imported {len(saved_transactions)} transactions. Failed to import {len(failed_transactions)} transactions.',
             'count': len(saved_transactions),
-            'failed_transactions': failed_transactions
+            'failed_transactions': serializable_failed
         }
         logger.info(f"Operation result: {result}")
         return jsonify(result), 200
@@ -369,10 +460,13 @@ def save_transcript():
     except Exception as e:
         logger.error(f"An error occurred while processing transactions: {str(e)}")
         logger.error(traceback.format_exc())
+        error_details = str(e)
+        logger.error(f"Error details: {error_details}")
         return jsonify({
             'error': 'An error occurred while processing transactions',
-            'details': str(e),
-            'count': 0
+            'details': error_details,
+            'count': 0,
+            'failed_transactions': []
         }), 500
 
 @expenses_bp.route('/edit_transaction/<string:transaction_id>', methods=['GET', 'POST'])

@@ -1,6 +1,5 @@
 import re
 from typing import Dict, Any
-import PyPDF2
 from ..models.transaction import Transaction
 
 def is_numeric(token):
@@ -20,13 +19,6 @@ def parse_thai_transaction(transaction_str: str) -> Dict[str, Any]:
         
     result = match.groupdict()
     result['amount'] = float(result['amount'])
-    
-    # Automatically categorize transaction during parsing
-    result['category'], result['confidence'] = auto_categorize_transaction(
-        result['detail'], 
-        result['amount']
-    )
-    
     return result
 
 
@@ -174,7 +166,7 @@ def parse_transaction_line(line):
     result = {
         'id': transaction.id,
         'date_time': transaction.date_time,
-        'transaction': transaction.transaction_type,
+        'transaction_type': transaction.transaction_type,
         'details': transaction.detail,
         'extra': transaction.extra,
         'withdrawal': transaction.withdrawal,
