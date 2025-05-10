@@ -88,7 +88,7 @@
   <div class="ai-advice">
     <h2>AI advice:</h2>
     <div class="advice-content" id="aiAdvice">
-      Loading AI advice...
+      Click "Analyze My Finances" to get personalized advice
     </div>
   </div>
 </div>
@@ -146,15 +146,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  fetch('/ai/analysis/ai')
-    .then(response => response.json())
-    .then(data => {
-      document.getElementById('aiAdvice').innerHTML = data.analysis.replace(/\n/g, '<br>');
-    })
-    .catch(error => {
-      document.getElementById('aiAdvice').textContent = 'Error loading AI advice. Please try again.';
-    });
-
   // Handle currency formatting for all financial inputs
   const financialInputs = document.querySelectorAll('.financial-input');
   financialInputs.forEach(input => {
@@ -202,6 +193,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('resultsContent').innerHTML = resultsHTML;
     document.getElementById('analysisResults').style.display = 'block';
+    
+    // Fetch and display AI advice
+    fetch('/ai/analysis/ai')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('aiAdvice').innerHTML = data.analysis.replace(/\n/g, '<br>');
+      })
+      .catch(error => {
+        document.getElementById('aiAdvice').textContent = 'Error loading AI advice. Please try again.';
+      });
   });
 
   // Handle save button click
@@ -312,7 +313,7 @@ document.addEventListener('DOMContentLoaded', function() {
   border-radius: 8px;
   font-size: 16px;
   font-weight: 500;
-  cursor: pointer;
+  cursor: button;
   transition: all 0.2s ease;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   color: white;

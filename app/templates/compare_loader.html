@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <!-- Comparison Section -->
+    <div id="comparison-section">
+        <div class="row">
+            <!-- Uniqlo Card -->
+            <div class="col-md-6 mb-4">
+                <div class="card product-card">
+                    <img src="https://i.imgur.com/9R9YTDG.png" class="card-img-top" alt="Uniqlo Shirt">
+                    <div class="card-body">
+                        <h5 class="card-title">Uniqlo Shirt</h5>
+                        <p class="card-text text-success"><strong>฿1,290</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zara Card -->
+            <div class="col-md-6 mb-4">
+                <div class="card product-card">
+                    <img src="https://i.imgur.com/dD65cBe.png" class="card-img-top" alt="Zara Shirt">
+                    <div class="card-body">
+                        <h5 class="card-title">Zara Shirt</h5>
+                        <p class="card-text text-success"><strong>฿1,940</strong></p>
+                        <p class="card-text">
+                            <span class="text-success">+50%</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+</script>
+
+<style>
+.product-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.3s;
+}
+
+.product-card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.card-img-top {
+    height: 300px;
+    object-fit: cover;
+}
+
+@media (max-width: 768px) {
+    .col-md-6 {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Monthly Savings Planner</h2>
+    
+    <div class="savings-info">
+        <div>
+            <label>เป้าหมายการออม:</label>
+            <span id="savingsGoal">฿{{ "{:,.2f}".format(goal) }}</span>
+        </div>
+        <div>
+            <label>ยอดสะสมปัจจุบัน:</label>
+            <span id="currentSavings">฿{{ "{:,.2f}".format(current) }}</span>
+        </div>
+        <div>
+            <label>จำนวนเงินที่เหลืออีก:</label>
+            <span id="remainingAmount">฿{{ "{:,.2f}".format(remaining) }}</span>
+        </div>
+    </div>
+
+    <div class="savings-progress">
+    <div class="progress-container">
+        <div class="progress-bar" data-progress="{{ progress }}"></div>
+    </div>
+    <script src="{{ url_for('static', filename='budget.js') }}"></script>
+        <div class="progress-labels">
+            <span>฿0</span>
+            <span>฿{{ "{:,.2f}".format(goal) }}</span>
+        </div>
+    </div>
+
+    <form action="/budget/update" method="POST" class="budget-form">
+        <div class="form-group">
+            <input type="number" class="financial-input" name="amount" placeholder="Enter amount" required step="0.01">
+        </div>
+        <div class="form-group" style="display: flex; gap: 1rem;">
+            <button type="submit" name="action" value="deposit" class="save-button">
+                <i class="material-icons-round">add</i> ฝากเงิน
+            </button>
+            <button type="submit" name="action" value="withdraw" class="save-button">
+                <i class="material-icons-round">remove</i> ถอนเงิน
+            </button>
+            <button type="submit" name="action" value="set_goal" class="save-button" style="background-color: var(--secondary-color);">
+                <i class="material-icons-round">flag</i> Set Goal
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Search Bar -->
+    <div class="input-group mb-4 shadow-sm rounded-pill">
+        <span class="input-group-text bg-white border-0 px-3">
+            💡
+        </span>
+        <input type="text" class="form-control border-0 shadow-none" 
+               placeholder="Type your talents here (e.g. English, Guitar, Cooking)" 
+               id="searchInput" 
+               aria-label="Search talents">
+    </div>
+
+    <!-- Hustle Cards Section -->
+    <div class="row" id="hustleSections" style="display: none;">
+        <!-- For You Section -->
+        <div class="col-md-6">
+            <h3 class="text-primary">For You</h3>
+            <div class="hustle-card card mb-3 border-primary" data-tags="english thai guitar">
+                <div class="card mb-3">
+                    <div class="card-body text-center">
+                        <img src="{{ url_for('static', filename='images/Guitar Coaching.png') }}" 
+                             class="card-img-top mb-3" 
+                             alt="Guitar Coaching"
+                             style="max-width: 100px; height: auto;">
+                        <h5 class="card-title">Online Guitar Coaching</h5>
+                        <p class="card-text">300 Baht / Hour</p>
+                        <div class="tags">
+                            <span class="badge bg-primary me-1">English</span>
+                            <span class="badge bg-primary me-1">Thai</span>
+                            <span class="badge bg-primary">Guitar</span>
+                        </div>
+                        <p class="platform mt-2">Platform: Zoom / YouTube</p>
+                    </div>
+                </div>
+            </div>
+            <div class="hustle-card card mb-3 border-primary" data-tags="cooking thai">
+                    <div class="card-body text-center">
+                        <img src="{{ url_for('static', filename='images/Cooking online.png') }}" 
+                             class="card-img-top mb-3" 
+                             alt="Cooking Creator"
+                             style="max-width: 100px; height: auto;">
+                        <h5 class="card-title">Social Media Cooking Creator</h5>
+                        <p class="card-text">15xx Baht / Month</p>
+                        <div class="tags">
+                            <span class="badge bg-primary me-1">Cooking</span>
+                            <span class="badge bg-primary">Thai</span>
+                        </div>
+                        <p class="platform mt-2">Platform: TikTok / YouTube</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Up Coming Section -->
+        <div class="col-md-6">
+            <h3 class="text-success">Up Coming</h3>
+            <div class="hustle-card card mb-3 border-success" data-tags="thai english">
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='images/subtitle.png') }}" 
+                         class="card-img-top mb-3" 
+                         alt="Subtitle Translator"
+                         style="max-width: 100px; height: auto;">
+                    <h5 class="card-title">Subtitle Translator</h5>
+                    <p class="card-text">xxx Baht / Job</p>
+                    <div class="tags">
+                        <span class="badge bg-primary me-1">Thai</span>
+                        <span class="badge bg-primary">English</span>
+                    </div>
+                    <p class="platform mt-2">Platform: freelance subtitle platform</p>
+                </div>
+            </div>
+            <div class="hustle-card card mb-3 border-success" data-tags="thai teaching math">
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='images/tutoring.png') }}" 
+                         class="card-img-top mb-3" 
+                         alt="Online Tutor"
+                         style="max-width: 100px; height: auto;">
+                    <h5 class="card-title">Online Tutor for Primary School (Math/Thai)</h5>
+                    <p class="card-text">200 Baht / Session</p>
+                    <div class="tags">
+                        <span class="badge bg-primary me-1">Thai</span>
+                        <span class="badge bg-primary me-1">Teaching</span>
+                        <span class="badge bg-primary">Math</span>
+                    </div>
+                    <p class="platform mt-2">Platform: Learn Anywhere / Line Group</p>
+                </div>
+            </div>
+            <div class="hustle-card card mb-3 border-success" data-tags="design canva thai">
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='images/Poster Designer.png') }}" 
+                         class="card-img-top mb-3" 
+                         alt="Poster Designer"
+                         style="max-width: 100px; height: auto;">
+                    <h5 class="card-title">Freelance Poster Designer</h5>
+                    <p class="card-text">500–1,000 Baht / Job</p>
+                    <div class="tags">
+                        <span class="badge bg-primary me-1">Design</span>
+                        <span class="badge bg-primary me-1">Canva</span>
+                        <span class="badge bg-primary">Thai</span>
+                    </div>
+                    <p class="platform mt-2">Platform: Facebook Page / Freelance Market</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Search and Filter -->
+<script>
+// Show/hide sections based on search
+document.getElementById('searchInput').addEventListener('input', function() {
+    const searchTerm = this.value.trim().toLowerCase();
+    const sections = document.getElementById('hustleSections');
+    const cards = document.querySelectorAll('.hustle-card');
+    let hasMatches = false;
+
+    cards.forEach(card => {
+        const tags = card.getAttribute('data-tags').toLowerCase();
+        if (searchTerm === '' || tags.includes(searchTerm)) {
+            card.style.display = 'block';
+            card.style.animation = 'fadeIn 0.3s';
+            hasMatches = true;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    // Show/hide sections container
+    sections.style.display = hasMatches ? 'block' : 'none';
+});
+
+// Initialize by showing sections if search is empty
+document.getElementById('searchInput').addEventListener('focus', function() {
+    if (this.value.trim() === '') {
+        document.getElementById('hustleSections').style.display = 'block';
+    }
+});
+</script>
+
+<style>
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.hustle-card {
+    display: none;
+    transition: all 0.3s ease;
+}
+
+.tags .badge {
+    font-size: 0.9em;
+    margin-right: 0.3rem;
+}
+
+.platform {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+#searchInput {
+    border: none;
+    padding: 12px 16px;
+    border-radius: 50px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    width: 100%;
+    font-size: 16px;
+}
+
+#searchInput::placeholder {
+    color: #888;
+}
+
+.input-group-text {
+    background-color: white;
+    border: none;
+    font-size: 18px;
+}
+</style>
+{% endblock %}

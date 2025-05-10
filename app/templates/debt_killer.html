@@ -1,0 +1,350 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Debt Input Section -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h3 class="mb-4">Add New Debt</h3>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="debtTopic" placeholder="Debt Topic">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" id="totalAmount" placeholder="Total Amount">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" id="monthlyPayment" placeholder="Monthly Payment">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" id="interestRate" placeholder="Interest %">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" id="monthsToPay" placeholder="Months to Pay">
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-success w-100" id="addDebtBtn">+ Add Debt</button>
+    </div>
+    
+    <!-- Clear Completed Debts Button -->
+    <div class="text-center mt-4">
+        <button class="btn btn-danger" id="clearCompletedBtn">
+            Clear Completed Debts
+        </button>
+    </div>
+</div>
+        </div>
+    </div>
+
+    <!-- Remaining Debts Section -->
+    <div class="mb-4">
+        <h3>Remaining Debts</h3>
+        <div class="row" id="remainingDebts"></div>
+    </div>
+
+    <!-- Completed Debts Section -->
+    <div class="mb-4">
+        <h3>Completed Debts</h3>
+        <div class="row" id="completedDebts"></div>
+    </div>
+</div>
+
+<!-- Debt Card Template -->
+<template id="debtCardTemplate">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <img src="" class="debt-image mb-2" style="max-width: 100px; height: auto;">
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title mb-0"></h5>
+                    <button class="btn btn-success btn-sm pay-btn">Pay Debt</button>
+                </div>
+                <div class="debt-details">
+                    <p class="mb-1">Total: <span class="total-amount"></span></p>
+                    <p class="mb-1">Paid: <span class="paid-amount"></span></p>
+                    <div class="progress mb-2">
+                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="number" class="form-control payment-input" placeholder="Amount to pay">
+                        <button class="btn btn-success pay-amount-btn">Pay This Amount</button>
+                    </div>
+                    <p class="mb-1">Monthly: <span class="monthly-payment"></span></p>
+                    <p class="mb-1">Interest: 
+                        <span class="interest-rate"></span>%
+                        <span class="interest-indicator"></span>
+                    </p>
+                    <p>Remaining Months: <span class="remaining-months"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- JavaScript -->
+<script>
+// Load debts from localStorage
+let debts = JSON.parse(localStorage.getItem('debts')) || { remaining: [], completed: [] };
+
+// Initialize paid amounts if not set
+debts.remaining = debts.remaining.map(debt => {
+    if (!debt.paid) debt.paid = 0;
+    return debt;
+});
+
+// Render debts
+function renderDebts() {
+    const remaining = document.getElementById('remainingDebts');
+    const completed = document.getElementById('completedDebts');
+    const template = document.getElementById('debtCardTemplate');
+    
+    // Clear existing content
+    remaining.innerHTML = '';
+    completed.innerHTML = '';
+
+// Sort remaining debts by interest rate (highest first)
+    debts.remaining.sort((a, b) => b.interest - a.interest);
+
+    // Render remaining debts
+    debts.remaining.forEach((debt, index) => {
+        const card = template.content.cloneNode(true);
+        fillDebtCard(card, debt, index, false);
+        remaining.appendChild(card);
+    });
+
+    // Render completed debts
+    debts.completed.forEach((debt, index) => {
+        const card = template.content.cloneNode(true);
+        fillDebtCard(card, debt, index, true);
+        completed.appendChild(card);
+    });
+}
+
+// Fill debt card with data
+function fillDebtCard(card, debt, index, isCompleted) {
+    // Set debt image based on topic (order matters - more specific first)
+    const image = card.querySelector('.debt-image');
+    const topicLower = debt.topic.toLowerCase();
+    
+    if (topicLower.includes('credit card')) {
+        image.src = "{{ url_for('static', filename='images/credit card.png') }}";
+    } else if (topicLower.includes('car')) {
+        image.src = "{{ url_for('static', filename='images/car.png') }}";
+    } else if (topicLower.includes('phone')) {
+        image.src = "{{ url_for('static', filename='images/phone.png') }}";
+    } else if (topicLower.includes('house')) {
+        image.src = "{{ url_for('static', filename='images/house.png') }}";
+    } else {
+        image.style.display = 'none';
+    }
+    
+    card.querySelector('.card-title').textContent = debt.topic;
+    const total = parseFloat(debt.total);
+    const paid = parseFloat(debt.paid || 0);
+    const progress = (paid / total) * 100;
+    
+    card.querySelector('.total-amount').textContent = `฿${total.toLocaleString()}`;
+    card.querySelector('.paid-amount').textContent = `฿${paid.toLocaleString()}`;
+    card.querySelector('.monthly-payment').textContent = debt.monthly;
+    const interest = parseFloat(debt.interest);
+    card.querySelector('.interest-rate').textContent = interest;
+    
+    // Add interest indicator
+    const indicator = card.querySelector('.interest-indicator');
+    if (interest > 10) {
+        indicator.innerHTML = ' 🔺';
+        indicator.style.color = '#dc3545';
+    } else {
+        indicator.innerHTML = ' 🔻';
+        indicator.style.color = '#28a745';
+    }
+    
+    // Calculate and display remaining months
+    const remaining = Math.ceil((total - paid) / parseFloat(debt.monthly));
+    card.querySelector('.remaining-months').textContent = remaining;
+    card.querySelector('.progress-bar').style.width = `${progress}%`;
+
+    const cardElement = card.querySelector('.card');
+    const payBtn = card.querySelector('.pay-btn');
+
+    if (isCompleted) {
+        cardElement.classList.add('completed');
+        payBtn.remove();
+        const overlay = document.createElement('div');
+        overlay.className = 'completed-overlay';
+        overlay.innerHTML = '✔ DONE';
+        cardElement.appendChild(overlay);
+    } else {
+        const payBtn = card.querySelector('.pay-btn');
+        const payAmountBtn = card.querySelector('.pay-amount-btn');
+        const paymentInput = card.querySelector('.payment-input');
+        
+        payBtn.addEventListener('click', () => markAsCompleted(index));
+        payAmountBtn.addEventListener('click', () => {
+            const amount = parseFloat(paymentInput.value);
+            if (amount && amount > 0) {
+                makePayment(index, amount);
+            }
+        });
+    }
+}
+
+// Mark debt as completed
+function makePayment(index, amount) {
+    const debt = debts.remaining[index];
+    debt.paid = (parseFloat(debt.paid) || 0) + amount;
+    
+    if (debt.paid >= parseFloat(debt.total)) {
+        markAsCompleted(index);
+    } else {
+        saveAndRender();
+    }
+}
+
+function markAsCompleted(index) {
+    const debt = debts.remaining.splice(index, 1)[0];
+    debt.paid = parseFloat(debt.total);
+    debts.completed.push(debt);
+    saveAndRender();
+}
+
+// Add new debt
+document.getElementById('addDebtBtn').addEventListener('click', () => {
+    const topic = document.getElementById('debtTopic').value;
+    const total = document.getElementById('totalAmount').value;
+    const monthly = document.getElementById('monthlyPayment').value;
+    const interest = document.getElementById('interestRate').value;
+
+    if (topic && total && monthly && interest) {
+        debts.remaining.push({
+            topic,
+            total,
+            monthly,
+            interest,
+            months: document.getElementById('monthsToPay').value || 0,
+            paid: 0
+        });
+        saveAndRender();
+        clearForm();
+    }
+});
+
+// Save and render
+function saveAndRender() {
+    localStorage.setItem('debts', JSON.stringify(debts));
+    renderDebts();
+}
+
+// Clear form
+function clearForm() {
+    document.getElementById('debtTopic').value = '';
+    document.getElementById('totalAmount').value = '';
+    document.getElementById('monthlyPayment').value = '';
+    document.getElementById('interestRate').value = '';
+}
+
+// Clear completed debts
+document.getElementById('clearCompletedBtn').addEventListener('click', () => {
+    if (confirm('Are you sure you want to clear all completed debts? This cannot be undone.')) {
+        debts.completed = [];
+        saveAndRender();
+    }
+});
+
+// Initial render
+renderDebts();
+</script>
+
+<!-- Styles -->
+<style>
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+input[type="text"], input[type="number"] {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.debt-details {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.completed {
+    position: relative;
+}
+
+.completed-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2em;
+    border-radius: 0.25rem;
+}
+
+.progress {
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background-color: #28a745;
+    transition: width 0.3s ease;
+}
+
+.payment-input {
+    max-width: 120px;
+}
+
+.completed .debt-details {
+    opacity: 0.6;
+}
+
+.completed .progress-bar {
+    background-color: #6c757d;
+}
+
+.card {
+    transition: all 0.3s ease;
+    animation: fadeIn 0.5s;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1.5rem;
+}
+
+.card:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+{% endblock %}

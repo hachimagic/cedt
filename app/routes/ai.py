@@ -16,12 +16,12 @@ DEMO_CATEGORIES = {
     'Others': 15
 }
 
-DEMO_AI_ADVICE = """Based on your spending patterns:
-1. Your food expenses are within a reasonable range
-2. Consider reviewing your clothing budget
-3. Healthcare costs are well-managed
-4. Utility costs are average for your area
-5. Housing rent is your largest expense - consider long-term saving for a down payment"""
+DEMO_AI_ADVICE = """จากการวิเคราะห์การใช้จ่ายของคุณ:
+1. ค่าใช้จ่ายด้านอาหารอยู่ในเกณฑ์ที่เหมาะสม
+2. ควรทบทวนงบประมาณด้านเสื้อผ้า
+3. ค่าใช้จ่ายด้านสุขภาพได้รับการจัดการที่ดี
+4. ค่าสาธารณูปโภคอยู่ในระดับเฉลี่ยของพื้นที่
+5. ค่าเช่าที่พักอาศัยเป็นค่าใช้จ่ายหลัก - ควรวางแผนออมระยะยาวสำหรับการซื้อบ้าน"""
 
 @ai_bp.route('/')
 @login_required

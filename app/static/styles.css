@@ -884,6 +884,215 @@ input[type="radio"]:checked + .type-label.deposit {
     }
 }
 
+/* Budget Planning Styles */
+.savings-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background-color: var(--white);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.savings-info div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.savings-info label {
+    font-size: 0.875rem;
+    color: var(--text-light);
+}
+
+.savings-info span {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+/* Progress Bar */
+.savings-progress {
+    margin: 2rem 0;
+}
+
+.progress-container {
+    height: 12px;
+    background-color: rgba(6, 95, 70, 0.1);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--primary-light);
+    transition: width 0.3s ease;
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-light);
+}
+
+/* Budget Form */
+.budget-form {
+    max-width: 400px;
+    margin: 2rem auto;
+}
+
+.budget-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.budget-form .save-button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--white);
+}
+
+.budget-form .save-button[value="deposit"] {
+    background-color: var(--success-color);
+}
+
+.budget-form .save-button[value="withdraw"] {
+    background-color: var(--danger-color);
+}
+
+.budget-form .save-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.budget-form .save-button:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+.budget-form .save-button i {
+    font-size: 1.2rem;
+}
+
+/* Price Compare Page */
+#generateBtn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+#generateBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.product-card {
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.product-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.product-card img {
+    max-height: 200px;
+    object-fit: contain;
+    padding: 1rem;
+}
+
+.product-card .card-body {
+    padding: 1.5rem;
+}
+
+.product-card h5 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.product-card .card-text {
+    font-size: 1.5rem;
+}
+
+.my-interest-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.interest-category {
+    margin-bottom: 2rem;
+}
+
+.interest-category h5 {
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
+
+.interest-category span {
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.progress {
+    height: 8px;
+    border-radius: 4px;
+    background-color: #f1f5f9;
+}
+
+/* Product Actions */
+.product-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.btn-buy {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-like {
+    background-color: #ff4757;
+    color: white;
+}
+
+.btn-dislike {
+    background-color: #747d8c;
+    color: white;
+}
+
+/* Loading Spinner */
+.spinner {
+    width: 50px;
+    height: 50px;
+    margin: 2rem auto;
+    display: block;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* Footer */
 .footer {
     background: var(--primary-color);

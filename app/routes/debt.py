@@ -7,3 +7,8 @@ debt_bp = Blueprint('debt', __name__)
 @login_required
 def index():
     return render_template('debt.html')
+
+@debt_bp.route('/debt-killer')
+@login_required
+def debt_killer():
+    return render_template('debt_killer.html')

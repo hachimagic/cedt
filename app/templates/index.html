@@ -9,18 +9,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
 <body>
+    {% include 'header.html' %}
     <div class="container">
-        <!-- Mobile-style header -->
-        <div class="mobile-header">
-            <div class="header-left">
-                <h1>Dashboard</h1>
-            </div>
-            <div class="header-right">
-                <div class="user-info">P0501</div>
-                <span class="material-icons-round notification-icon">notifications</span>
-                <div class="wallet-amount">฿20,000</div>
-            </div>
-        </div>
 
         <!-- Summary Cards -->
         <div class="summary-grid">
@@ -49,14 +39,20 @@
                 <a href="/expenses" class="budget-button">
                     Expense Tracker
                 </a>
-                <a href="#" class="budget-button">
+                <a href="/budget" class="budget-button">
                     Budget Planning
                 </a>
                 <a href="/ai" class="budget-button">
                     AI for financial Planning
                 </a>
-                <a href="#" class="budget-button">
+                <a href="/price-compare" class="budget-button">
                     Price compare function
+                </a>
+                <a href="{{ url_for('debt.debt_killer') }}" class="budget-button">
+                    Debt Killer
+                </a>
+                <a href="/side-hustle" class="budget-button">
+                    Side Hustle
                 </a>
             </div>
         </div>

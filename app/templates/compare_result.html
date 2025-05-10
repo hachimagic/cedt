@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Price Compare Function</h1>
+    
+    <!-- Comparison Section -->
+    <div id="comparison-section">
+        <div class="row mb-5">
+            <div class="col-md-6 mb-3">
+                <div class="card product-card">
+                    <img src="{{ url_for('static', filename='images/uniqlo white shirt.png') }}" 
+                         class="card-img-top" alt="Uniqlo Shirt">
+                    <div class="card-body">
+                        <h5 class="card-title">Uniqlo Shirt</h5>
+                        <p class="card-text text-success"><strong>฿1,290</strong></p>
+                        <div class="product-actions">
+                            <button class="btn btn-buy">Buy</button>
+                            <button class="btn btn-like">❤️</button>
+                            <button class="btn btn-dislike">❌</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card product-card">
+                    <img src="{{ url_for('static', filename='images/zara white shirt.png') }}" 
+                         class="card-img-top" alt="Zara Shirt">
+                    <div class="card-body">
+                        <h5 class="card-title">Zara Shirt</h5>
+                        <p class="card-text text-success"><strong>฿1,940</strong></p>
+                        <p class="card-text">
+                            <span class="clickable-diff positive">+50%</span>
+                        </p>
+                        <div class="product-actions">
+                            <button class="btn btn-buy">Buy</button>
+                            <button class="btn btn-like">❤️</button>
+                            <button class="btn btn-dislike">❌</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Interest Section -->
+        <div class="interest-section">
+            <div class="interest-item">
+                <p>Coffee — Monthly Spend ฿600 (Nov–Dec)</p>
+                <div class="bar-bg"><div class="bar-fill" style="--target-width: 60%;"></div></div>
+            </div>
+            <div class="interest-item">
+                <p>Shirts — Monthly Spend ฿300 (Nov–Dec)</p>
+                <div class="bar-bg"><div class="bar-fill" style="--target-width: 30%;"></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bar-bg {
+    width: 100%;
+    background: #f1f1f1;
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+.bar-fill {
+    height: 100%;
+    background: #1abc9c;
+    width: 0;
+    animation: fillBar 2s forwards;
+}
+@keyframes fillBar {
+    from { width: 0%; }
+    to { width: var(--target-width); }
+}
+</style>
+{% endblock %}
