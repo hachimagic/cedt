@@ -1,7 +1,7 @@
 import re
 from typing import Dict, Any
 import PyPDF2
-from app.models.transaction import Transaction
+from ..models.transaction import Transaction
 
 def is_numeric(token):
     try:
@@ -182,7 +182,8 @@ def parse_transaction_line(line):
         'balance': transaction.balance,
         'branch': transaction.branch,
         'line_text': transaction.line_text,
-        'category': transaction.category
+        'category': transaction.category,
+        'category_id': transaction.category_id
     }
     print(f"Parsed result: {result}")
     return result

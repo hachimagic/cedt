@@ -11,8 +11,14 @@ def create_app():
     app.config['UPLOAD_FOLDER'] = 'uploads'
     app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB
-    app.config['UPLOAD_FOLDER'] = 'uploads'
-    app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
+    
+    # Create necessary directories
+    import os
+    from pathlib import Path
+    
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    os.makedirs('user_transactions', exist_ok=True)
+    os.makedirs('user_data', exist_ok=True)
     
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
@@ -27,9 +33,9 @@ def create_app():
         from .routes.settings import settings_bp
         
         app.register_blueprint(main_bp)
-        app.register_blueprint(auth_bp)
+        app.register_blueprint(auth_bp, url_prefix='/auth')
         app.register_blueprint(expenses_bp, url_prefix='/expenses')
-        app.register_blueprint(debt_bp)
+        app.register_blueprint(debt_bp, url_prefix='/debt')
         app.register_blueprint(ai_bp, url_prefix='/ai')
         app.register_blueprint(settings_bp)
         

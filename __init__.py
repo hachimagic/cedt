@@ -1,1 +1,1 @@
-# This file marks the directory as a Python package.
+# This file makes the root directory a Python package

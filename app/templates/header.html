@@ -24,6 +24,24 @@
                     </div>
                 </div>
                 <a href="{{ url_for('settings.index') }}" class="nav-link">Settings</a>
+                {% if current_user.is_authenticated %}
+                <div class="user-menu dropdown">
+                    <button class="nav-link user-button">
+                        <i class="fas fa-user-circle"></i> 
+                        {{ current_user.username }} 
+                        <i class="arrow"></i>
+                    </button>
+                    <div class="dropdown-content user-dropdown">
+                        <a href="{{ url_for('settings.index') }}">Profile</a>
+                        <a href="{{ url_for('auth.logout') }}">Logout</a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="auth-links">
+                    <a href="{{ url_for('auth.login') }}" class="nav-link">Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="nav-link">Register</a>
+                </div>
+                {% endif %}
             </div>
         </nav>
     </div>

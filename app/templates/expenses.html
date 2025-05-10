@@ -112,6 +112,16 @@
               <td class="amount withdrawal">{{ trans.withdrawal }}</td>
               <td class="amount">{{ trans.balance }}</td>
               <td>
+                <select class="form-control" name="category" aria-label="Select transaction category">
+                  <option value="">Select Category</option>
+                  {% for category in categories %}
+                    <option value="{{ category.id }}" {% if trans.category == category.name or trans.category_id|string == category.id|string %}selected{% endif %}>
+                      {{ category.name }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </td>
+              <td>
                 <input type="text" 
                        class="form-control" 
                        name="explanation" 
@@ -119,7 +129,7 @@
                        placeholder="Add explanation">
               </td>
               <td>
-                <select class="form-control" name="category">
+                <select class="form-control" name="category" aria-label="Select transaction category">
                   <option value="">Select Category</option>
                   {% for category in categories %}
                     <option value="{{ category.id }}" {% if trans.category == category.name or trans.category_id|string == category.id|string %}selected{% endif %}>
@@ -164,34 +174,55 @@
               </tr>
             </thead>
             <tbody>
-              {% for trans in transactions %}
-              <tr data-transaction-id="{{ trans.id }}">
+              {% for trans in transactions|sort(attribute='date_time', reverse=true) %}
+              <tr data-transaction-id="{{ trans.id }}" class="transaction-row">
                 <td>{{ loop.index }}</td>
-                <td>{{ trans.date_time.strftime('%d/%m/%y %H:%M') if trans.date_time is not string else trans.date_time }}</td>
-                <td>{{ trans.transaction }}</td>
-                <td>{{ trans.details }}</td>
-                <td class="amount deposit">{{ trans.deposit if trans.deposit else '' }}</td>
-                <td class="amount withdrawal">{{ trans.withdrawal if trans.withdrawal else '' }}</td>
-                <td class="amount">{{ trans.balance }}</td>
                 <td>
-                  <input type="text" 
-                         class="form-control" 
-                         name="explanation" 
-                         value="{{ trans.explanation or '' }}"
-                         placeholder="Add explanation">
+                  <span class="transaction-date">
+                    {{ trans.date_time.strftime('%Y-%m-%d %H:%M') if trans.date_time is not string else trans.date_time }}
+                  </span>
+                </td>
+                <td class="transaction-type">{{ trans.transaction }}</td>
+                <td class="transaction-details">{{ trans.details }}</td>
+                <td class="amount deposit">
+                  {% if trans.deposit %}
+                    ฿{{ "{:,.2f}".format(trans.deposit|float) }}
+                  {% endif %}
+                </td>
+                <td class="amount withdrawal">
+                  {% if trans.withdrawal %}
+                    ฿{{ "{:,.2f}".format(trans.withdrawal|float) }}
+                  {% endif %}
+                </td>
+                <td class="amount balance">
+                  ฿{{ "{:,.2f}".format(trans.balance|float) }}
                 </td>
                 <td>
-                  <select class="form-control" name="category">
+                  <input type="text" 
+                         class="form-control explanation-input" 
+                         name="explanation" 
+                         value="{{ trans.explanation or '' }}"
+                         placeholder="Add explanation"
+                         data-transaction-id="{{ trans.id }}">
+                </td>
+                <td>
+                  <select class="form-control category-select" 
+                          name="category"
+                          data-transaction-id="{{ trans.id }}"
+                          aria-label="Select transaction category">
                     <option value="">Select Category</option>
                     {% for category in categories %}
-                    <option value="{{ category.id }}" {% if trans.category_id|string == category.id|string %}selected{% endif %}>
+                    <option value="{{ category.id }}" 
+                            {% if trans.category_id|string == category.id|string %}selected{% endif %}>
                       {{ category.name }}
                     </option>
                     {% endfor %}
                   </select>
                 </td>
                 <td class="actions">
-                  <button class="btn btn-icon btn-delete" title="Delete Transaction">
+                  <button class="btn btn-icon btn-delete" 
+                          title="Delete Transaction"
+                          data-transaction-id="{{ trans.id }}">
                     <i class="fas fa-trash"></i>
                   </button>
                 </td>
@@ -403,17 +434,31 @@ document.addEventListener('DOMContentLoaded', function() {
             throw new Error('Invalid response from server');
         }
         
-        if (saveResponse.ok) {
-          console.log('Save successful:', data);
-          alert(`Transactions saved successfully! ${data.count} transactions processed.`);
+        console.log('Save response:', data);
+        
+        // Ensure data.count is a number
+        const count = typeof data.count === 'number' ? data.count : 0;
+        const failedCount = data.failed_transactions ? data.failed_transactions.length : 0;
+        
+        if (count > 0) {
+          let message = `Transactions saved successfully! ${count} transactions processed.`;
+          if (failedCount > 0) {
+            message += ` Failed to import ${failedCount} transactions.`;
+            console.error('Failed transactions:', data.failed_transactions);
+          }
+          alert(message);
           console.log('Redirecting to expenses page...');
-          const timestamp = new Date().getTime();
-          setTimeout(() => {
-            window.location.replace('/expenses?t=' + timestamp);
-          }, 1000); // Increased delay to ensure save completes
+          // Use window.location.href instead of window.location.replace
+          window.location.href = '/expenses';
+        } else if (failedCount > 0) {
+          console.error('All transactions failed to save:', data.failed_transactions);
+          alert(`Failed to save all ${failedCount} transactions. Please check the console for details.`);
+        } else if (data.error) {
+          console.error('Server returned error:', data.error);
+          alert(`Error: ${data.error}`);
         } else {
-          console.error('Server returned error:', data);
-          throw new Error(data.message || 'Failed to save transactions');
+          console.error('Server returned unexpected response:', data);
+          alert('An unexpected error occurred. Please check the console for details.');
         }
       } catch (error) {
         console.error('Save operation failed:', error);
@@ -427,18 +472,76 @@ document.addEventListener('DOMContentLoaded', function() {
   if (saveAllButton) {
     saveAllButton.addEventListener('click', async function() {
       try {
-        const transactions = Array.from(document.querySelectorAll('tbody tr')).map(row => ({
-          id: row.dataset.transactionId,
-          date_time: row.cells[1].textContent,
-          transaction: row.cells[2].textContent,
-          details: row.cells[3].textContent,
-          deposit: row.cells[4].textContent,
-          withdrawal: row.cells[5].textContent,
-          balance: row.cells[6].textContent,
-          explanation: row.querySelector('input[name="explanation"]').value,
-          category_id: row.querySelector('select[name="category"]').value
-        }));
+        console.log('Starting save all changes process...');
+        
+        if (!confirm('Are you sure you want to save all changes?')) {
+          console.log('User cancelled save operation');
+          return;
+        }
 
+        console.log('Collecting transaction data...');
+        const rows = document.querySelectorAll('tbody tr.transaction-row');
+        console.log(`Found ${rows.length} transaction rows`);
+        
+        const transactions = [];
+        for (const [index, row] of rows.entries()) {
+          console.log(`Processing row ${index + 1}:`);
+          try {
+            // Get transaction ID
+            const transactionId = row.dataset.transactionId;
+            
+            // Get date from the transaction-date span
+            const dateElement = row.querySelector('.transaction-date');
+            const date = dateElement ? dateElement.textContent.trim() : '';
+            
+            // Get transaction type
+            const transactionType = row.querySelector('.transaction-type').textContent.trim();
+            
+            // Get details
+            const details = row.querySelector('.transaction-details').textContent.trim();
+            
+            // Get deposit amount (remove currency symbol and formatting)
+            const depositElement = row.querySelector('.deposit');
+            const deposit = depositElement ? depositElement.textContent.trim().replace(/[^\d.-]/g, '') : '';
+            
+            // Get withdrawal amount (remove currency symbol and formatting)
+            const withdrawalElement = row.querySelector('.withdrawal');
+            const withdrawal = withdrawalElement ? withdrawalElement.textContent.trim().replace(/[^\d.-]/g, '') : '';
+            
+            // Get balance (remove currency symbol and formatting)
+            const balanceElement = row.querySelector('.balance');
+            const balance = balanceElement ? balanceElement.textContent.trim().replace(/[^\d.-]/g, '') : '';
+            
+            // Get explanation from input
+            const explanationInput = row.querySelector('.explanation-input');
+            const explanation = explanationInput ? explanationInput.value : '';
+            
+            // Get category ID from select
+            const categorySelect = row.querySelector('.category-select');
+            const categoryId = categorySelect ? categorySelect.value : '';
+            
+            const transaction = {
+              id: transactionId,
+              date_time: date,
+              transaction: transactionType,
+              details: details,
+              deposit: deposit,
+              withdrawal: withdrawal,
+              balance: balance,
+              explanation: explanation,
+              category_id: categoryId
+            };
+            
+            console.log('Constructed transaction:', transaction);
+            transactions.push(transaction);
+          } catch (err) {
+            console.error(`Error processing row ${index + 1}:`, err);
+            console.error('Row HTML:', row.outerHTML);
+          }
+        }
+        
+        console.log(`Processed ${transactions.length} transactions successfully`);
+        
         // Get category data from chart
         const categoryData = {};
         const chart = Chart.getChart('categoryChart');
@@ -447,25 +550,34 @@ document.addEventListener('DOMContentLoaded', function() {
             categoryData[label] = chart.data.datasets[0].data[index];
           });
         }
-
-        const response = await fetch('/ai/save_financial_profile', {
+        
+        console.log('Sending save request to server...');
+        const requestBody = { 
+          transactions,
+          categories: categoryData
+        };
+        console.log('Request body:', JSON.stringify(requestBody, null, 2));
+        
+        const response = await fetch('/expenses/save_transcript', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
           },
-          body: JSON.stringify({
-            transactions,
-            categories: categoryData
-          })
+          body: JSON.stringify({ transactions })
         });
-
+        
+        console.log('Response status:', response.status);
+        
         const data = await response.json();
+        console.log('Save response:', data);
         
         if (response.ok) {
           alert('Changes saved successfully!');
-          initializeCharts(); // Update charts after saving
+          // Reload the page to show updated data
+          window.location.reload();
         } else {
-          throw new Error(data.message || 'Failed to save changes');
+          throw new Error(data.message || data.error || 'Failed to save changes');
         }
       } catch (error) {
         console.error('Error:', error);
@@ -486,6 +598,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Chart initialization function
 function initializeCharts() {
+  // Destroy existing charts if they exist
+  const categoryChartCanvas = document.getElementById('categoryChart');
+  const dailyChartCanvas = document.getElementById('dailySpendingChart');
+  
+  if (categoryChartCanvas) {
+    const existingCategoryChart = Chart.getChart(categoryChartCanvas);
+    if (existingCategoryChart) {
+      existingCategoryChart.destroy();
+    }
+  }
+  
+  if (dailyChartCanvas) {
+    const existingDailyChart = Chart.getChart(dailyChartCanvas);
+    if (existingDailyChart) {
+      existingDailyChart.destroy();
+    }
+  }
+
   // Get transaction data
   const transactions = Array.from(document.querySelectorAll('tbody tr')).map(row => ({
     date: row.cells[1].textContent,

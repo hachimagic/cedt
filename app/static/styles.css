@@ -1,4 +1,5 @@
 :root {
+    /* Color System */
     --primary-color: #065F46;
     --primary-light: #34D399;
     --secondary-color: #3B82F6;
@@ -8,63 +9,81 @@
     --text-color: #1E293B;
     --text-light: #64748B;
     --white: #FFFFFF;
+
+    /* Typography */
+    --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-size-base: 16px;
+    --line-height-base: 1.6;
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+
+    /* Shadows */
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.15);
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.2);
-    --radius-sm: 4px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
-    --transition: all 0.3s ease;
+
+    /* Borders */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --border-width: 1px;
+    --border-color: #E2E8F0;
+
+    /* Transitions */
+    --transition-duration: 0.3s;
+    --transition-timing: ease;
 }
 
 /* Base Styles */
 body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background-color: var(--background-color);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
     color: var(--text-color);
+    background-color: var(--background-color);
     margin: 0;
     padding: 0;
-    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color);
+    margin: var(--spacing-lg) 0;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1rem; }
+h6 { font-size: 0.875rem; }
+
+p {
+    color: var(--text-light);
+    margin: var(--spacing-md) 0;
 }
 
 .container {
     width: 90%;
     max-width: 1200px;
-    margin: 2rem auto;
-    padding: 2rem;
+    margin: var(--spacing-xl) auto;
+    padding: var(--spacing-xl);
     background: var(--white);
-    border-radius: var(--radius-lg);
+    border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-sm);
-    transition: var(--transition);
+    transition: all var(--transition-duration) var(--transition-timing);
 }
 
 .container:hover {
     box-shadow: var(--shadow-md);
-}
-
-/* Typography */
-h1, h2, h3 {
-    color: var(--primary-color);
-    margin: 1.5rem 0;
-    font-weight: 600;
-    line-height: 1.3;
-}
-
-h1 { 
-    font-size: 2.5rem;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-h2 { font-size: 2rem; }
-h3 { font-size: 1.5rem; }
-
-p {
-    color: var(--text-light);
-    margin: 1rem 0;
-    line-height: 1.8;
 }
 
 /* Header */
@@ -83,12 +102,12 @@ p {
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1rem 2rem;
+    padding: var(--spacing-md) var(--spacing-xl);
 }
 
 .brand .logo img {
     height: 120px;
-    transition: var(--transition);
+    transition: all var(--transition-duration) var(--transition-timing);
 }
 
 .brand .logo img:hover {
@@ -118,7 +137,7 @@ p {
     height: 2px;
     background: var(--primary-color);
     border-radius: 10px;
-    transition: var(--transition);
+    transition: all var(--transition-duration) var(--transition-timing);
 }
 
 .hamburger:hover span {
@@ -128,15 +147,15 @@ p {
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: var(--spacing-lg);
 }
 
 .nav-link {
     color: var(--text-color);
     text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-md);
-    transition: var(--transition);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    transition: all var(--transition-duration) var(--transition-timing);
     font-weight: 500;
     position: relative;
 }
@@ -154,7 +173,7 @@ p {
     width: 0;
     height: 2px;
     background: var(--primary-light);
-    transition: var(--transition);
+    transition: all var(--transition-duration) var(--transition-timing);
     transform: translateX(-50%);
 }
 
@@ -182,12 +201,12 @@ p {
     left: 0;
     background: var(--white);
     box-shadow: var(--shadow-md);
-    border-radius: var(--radius-md);
+    border-radius: var(--border-radius-md);
     min-width: 200px;
-    padding: 0.5rem 0;
+    padding: var(--spacing-sm) 0;
     opacity: 0;
     transform: translateY(10px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all var(--transition-duration) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dropdown:hover .dropdown-content {
@@ -198,16 +217,63 @@ p {
 
 .dropdown-content a {
     display: block;
-    padding: 0.75rem 1.5rem;
+    padding: var(--spacing-sm) var(--spacing-lg);
     color: var(--text-color);
     text-decoration: none;
-    transition: var(--transition);
+    transition: all var(--transition-duration) var(--transition-timing);
 }
 
 .dropdown-content a:hover {
     background: rgba(6, 95, 70, 0.05);
     color: var(--primary-color);
-    padding-left: 2rem;
+    padding-left: var(--spacing-xl);
+}
+
+/* User Menu Styles */
+.user-menu {
+    position: relative; /* Ensure positioning context for dropdown */
+}
+
+.user-button {
+    background: rgba(6, 95, 70, 0.1);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin-left: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    cursor: pointer;
+    transition: all var(--transition-duration) var(--transition-timing);
+}
+
+.user-button:hover {
+    background: rgba(6, 95, 70, 0.2);
+}
+
+.user-button i.fa-user-circle {
+    margin-right: var(--spacing-xs);
+}
+
+.auth-links {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-left: var(--spacing-md);
+}
+
+.user-dropdown {
+    min-width: 150px;
+}
+
+.user-dropdown a {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.user-dropdown a i {
+    width: 1rem;
+    text-align: center;
 }
 
 /* Buttons */
@@ -215,17 +281,17 @@ p {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.75rem 1.5rem;
+    padding: var(--spacing-sm) var(--spacing-md);
     border: none;
-    border-radius: var(--radius-md);
-    font-size: 1rem;
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-base);
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    gap: 0.5rem;
+    transition: all var(--transition-duration) var(--transition-timing);
     text-decoration: none;
     position: relative;
     overflow: hidden;
+    gap: var(--spacing-xs);
 }
 
 .btn::after {
@@ -237,7 +303,7 @@ p {
     left: 0;
     background: linear-gradient(rgba(255, 255, 255, 0.2), transparent);
     opacity: 0;
-    transition: var(--transition);
+    transition: opacity var(--transition-duration) var(--transition-timing);
 }
 
 .btn:hover::after {
@@ -247,45 +313,63 @@ p {
 .btn-primary {
     background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
     color: var(--white);
-    box-shadow: 0 2px 4px rgba(6, 95, 70, 0.1);
+    box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(6, 95, 70, 0.2);
+    box-shadow: var(--shadow-md);
 }
 
 .btn-secondary {
     background: var(--secondary-color);
     color: var(--white);
-    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
+    box-shadow: var(--shadow-sm);
 }
 
 .btn-secondary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+    box-shadow: var(--shadow-md);
 }
 
 .btn-danger {
     background: var(--danger-color);
     color: var(--white);
-    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.1);
+    box-shadow: var(--shadow-sm);
 }
 
 .btn-danger:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(239, 68, 68, 0.2);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 /* Forms */
 .form-container {
     max-width: 600px;
-    margin: 0 auto;
+    margin: var(--spacing-xl) auto;
+    padding: var(--spacing-xl);
+    background: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
 }
 
 .page-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: var(--spacing-xl);
 }
 
 .page-header p {
@@ -293,20 +377,20 @@ p {
 }
 
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-lg);
     position: relative;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-xs);
     color: var(--text-color);
     font-weight: 500;
 }
 
 .form-text {
     display: block;
-    margin-top: 0.5rem;
+    margin-top: var(--spacing-xs);
     font-size: 0.875rem;
     color: var(--text-light);
 }
@@ -319,66 +403,56 @@ p {
 
 .input-prefix {
     position: absolute;
-    left: 1rem;
+    left: var(--spacing-md);
     color: var(--text-light);
     font-weight: 500;
 }
 
 .input-group input {
-    padding-left: 2rem !important;
+    padding-left: calc(var(--spacing-md) + 1rem) !important; /* Adjust padding for prefix */
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
+.form-control {
     width: 100%;
-    padding: 0.75rem 1rem;
-    border: 2px solid #E2E8F0;
-    border-radius: var(--radius-md);
-    font-size: 1rem;
-    transition: var(--transition);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-base);
+    transition: all var(--transition-duration) var(--transition-timing);
     background: var(--white);
 }
 
-.form-group input:hover,
-.form-group select:hover,
-.form-group textarea:hover {
+.form-control:hover {
     border-color: var(--primary-light);
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
+.form-control:focus {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1);
 }
 
-.form-group input.is-invalid,
-.form-group select.is-invalid,
-.form-group textarea.is-invalid {
+.form-control.is-invalid {
     border-color: var(--danger-color);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23dc3545' viewBox='0 0 16 16'%3E%3Cpath d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 0.75rem center;
+    background-position: right var(--spacing-md) center;
     background-size: 1rem;
 }
 
-.form-group input.is-invalid:focus,
-.form-group select.is-invalid:focus,
-.form-group textarea.is-invalid:focus {
+.form-control.is-invalid:focus {
     box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
 }
 
 /* Transaction Form Specific Styles */
 .transaction-form {
-    padding: 2rem;
+    padding: var(--spacing-xl);
 }
 
 .transaction-type-selector {
     display: flex;
-    gap: 1rem;
-    margin-top: 0.5rem;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-sm);
 }
 
 .type-option {
@@ -393,12 +467,12 @@ p {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 1rem;
-    border: 2px solid #E2E8F0;
-    border-radius: var(--radius-md);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius-md);
     cursor: pointer;
-    transition: var(--transition);
+    transition: all var(--transition-duration) var(--transition-timing);
     font-weight: 500;
 }
 
@@ -434,10 +508,10 @@ input[type="radio"]:checked + .type-label.deposit {
 
 .form-actions {
     display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid #E2E8F0;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-md);
+    border-top: var(--border-width) solid var(--border-color);
 }
 
 .form-actions .btn {
@@ -445,20 +519,20 @@ input[type="radio"]:checked + .type-label.deposit {
 }
 
 .form-actions .btn i {
-    margin-right: 0.5rem;
+    margin-right: var(--spacing-xs);
 }
 
 @media (max-width: 768px) {
     .transaction-type-selector {
         flex-direction: column;
     }
-    
+
     .form-actions {
         flex-direction: column;
     }
-    
+
     .transaction-form {
-        padding: 1rem;
+        padding: var(--spacing-md);
     }
 }
 
@@ -466,25 +540,25 @@ input[type="radio"]:checked + .type-label.deposit {
 .expenses-page {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: var(--spacing-xl);
 }
 
 .dashboard-summary {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1rem;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-md);
 }
 
 .summary-card {
     background: var(--white);
-    padding: 1.5rem;
-    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-sm);
     display: flex;
     align-items: center;
-    gap: 1rem;
-    transition: var(--transition);
+    gap: var(--spacing-md);
+    transition: all var(--transition-duration) var(--transition-timing);
 }
 
 .summary-card:hover {
@@ -525,7 +599,7 @@ input[type="radio"]:checked + .type-label.deposit {
     display: block;
     font-size: 0.875rem;
     color: var(--text-light);
-    margin-bottom: 0.25rem;
+    margin-bottom: var(--spacing-xs);
 }
 
 .summary-value {
@@ -538,20 +612,20 @@ input[type="radio"]:checked + .type-label.deposit {
 .charts-section {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 1.5rem;
-    margin: 2rem 0;
+    gap: var(--spacing-lg);
+    margin: var(--spacing-xl) 0;
 }
 
 .chart-container {
     background: var(--white);
-    padding: 1.5rem;
-    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-sm);
     height: 300px;
 }
 
 .chart-header {
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-md);
 }
 
 .chart-header h3 {
@@ -561,24 +635,24 @@ input[type="radio"]:checked + .type-label.deposit {
 
 /* File Upload Section */
 .upload-section {
-    padding: 2rem;
+    padding: var(--spacing-xl);
     text-align: center;
     background: var(--white);
-    border-radius: var(--radius-md);
+    border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-sm);
 }
 
 .upload-header {
-    margin-bottom: 2rem;
+    margin-bottom: var(--spacing-xl);
 }
 
 .upload-header h3 {
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-sm);
 }
 
 .file-input-container {
     position: relative;
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-md);
 }
 
 .file-input {
@@ -594,13 +668,13 @@ input[type="radio"]:checked + .type-label.deposit {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 2rem;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xl);
     background: var(--background-color);
     border: 2px dashed var(--primary-light);
-    border-radius: var(--radius-md);
+    border-radius: var(--border-radius-md);
     cursor: pointer;
-    transition: var(--transition);
+    transition: all var(--transition-duration) var(--transition-timing);
 }
 
 .file-label:hover {
@@ -616,7 +690,7 @@ input[type="radio"]:checked + .type-label.deposit {
 /* Tables */
 .table-responsive {
     overflow-x: auto;
-    border-radius: var(--radius-md);
+    border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-sm);
 }
 
@@ -630,7 +704,7 @@ input[type="radio"]:checked + .type-label.deposit {
 .table th {
     background: var(--primary-color);
     color: var(--white);
-    padding: 1rem 1.5rem;
+    padding: var(--spacing-md) var(--spacing-lg);
     text-align: left;
     font-weight: 600;
     text-transform: uppercase;
@@ -640,8 +714,8 @@ input[type="radio"]:checked + .type-label.deposit {
 }
 
 .table td {
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #E2E8F0;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-bottom: var(--border-width) solid var(--border-color);
     color: var(--text-color);
 }
 
@@ -650,7 +724,7 @@ input[type="radio"]:checked + .type-label.deposit {
 }
 
 .table tr {
-    transition: var(--transition);
+    transition: all var(--transition-duration) var(--transition-timing);
 }
 
 .table tr:hover {
@@ -672,40 +746,22 @@ input[type="radio"]:checked + .type-label.deposit {
 }
 
 /* Action Buttons */
-.btn-icon {
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: transparent;
-    color: var(--text-light);
-    transition: var(--transition);
-}
-
-.btn-icon:hover {
-    background: rgba(239, 68, 68, 0.1);
-    color: var(--danger-color);
-}
-
 .actions-bar {
     display: flex;
     justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #E2E8F0;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: var(--border-width) solid var(--border-color);
 }
 
 /* Section Headers */
 .section-header {
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-lg);
 }
 
 .section-header h2 {
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-sm);
 }
 
 .section-header p {
@@ -719,6 +775,17 @@ input[type="radio"]:checked + .type-label.deposit {
 }
 
 /* Animations */
+@keyframes slideIn {
+    from {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 @keyframes fadeOut {
     from {
         opacity: 1;
@@ -732,30 +799,83 @@ input[type="radio"]:checked + .type-label.deposit {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .charts-section {
+    .container {
+        width: 95%;
+        padding: var(--spacing-md);
+        margin: var(--spacing-md) auto;
+    }
+
+    .header-container {
+        padding: 0.75rem var(--spacing-md);
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--white);
+        flex-direction: column;
+        gap: 0;
+        box-shadow: var(--shadow-md);
+        padding: var(--spacing-md) 0;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-link {
+        padding: var(--spacing-md) var(--spacing-lg);
+        width: 100%;
+        border-radius: 0;
+    }
+
+    .nav-link:hover::after {
+        width: 0;
+    }
+
+    .dropdown-content,
+    .user-dropdown {
+        position: static;
+        box-shadow: none;
+        padding: 0;
+        background: rgba(6, 95, 70, 0.05);
+    }
+
+    .dropdown-content a,
+    .user-dropdown a {
+        padding: var(--spacing-md) var(--spacing-xl);
+    }
+
+    .footer-container {
         grid-template-columns: 1fr;
+        gap: var(--spacing-xl);
+        padding: 0 var(--spacing-md);
     }
-    
-    .chart-container {
-        height: 250px;
-    }
-    
-    .dashboard-summary {
-        grid-template-columns: 1fr;
-    }
-    
-    .table td, 
-    .table th {
-        padding: 0.75rem;
-    }
-    
-    .actions-bar {
+
+    .newsletter-form {
         flex-direction: column;
     }
-    
-    .actions-bar .btn {
+
+    .newsletter-form button {
         width: 100%;
     }
+
+    .table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.25rem; }
 }
 
 /* Footer */
@@ -936,396 +1056,4951 @@ input[type="radio"]:checked + .type-label.deposit {
 }
 
 .auth-header h2 {
+    color: #065F46;
     margin-bottom: 0.5rem;
 }
 
-.auth-form {
-    margin-bottom: 2rem;
+.auth-header p {
+    color: #666;
 }
 
-/* Floating Labels */
-.floating-label {
+.form-group {
     position: relative;
     margin-bottom: 1.5rem;
 }
 
-.floating-label {
-    position: relative;
-}
-
-.floating-label input {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 2px solid #E2E8F0;
-    border-radius: var(--radius-md);
-    font-size: 1rem;
-    transition: var(--transition);
-    background-color: var(--white);
-}
-
-.floating-label input:hover {
-    border-color: var(--primary-light);
-}
-
-.floating-label input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1);
-}
-
-.floating-label label {
+.form-group label {
     position: absolute;
-    left: 1rem;
     top: 1rem;
-    padding: 0 0.25rem;
-    background-color: var(--white);
-    color: var(--text-light);
-    font-size: 1rem;
-    transition: var(--transition);
+    left: 1rem;
+    color: #999;
+    transition: all 0.3s ease;
     pointer-events: none;
 }
 
-.floating-label input:focus,
-.floating-label input:not(:placeholder-shown) {
-    border-color: var(--primary-color);
-    outline: none;
-}
-
-.floating-label input:focus ~ label,
-.floating-label input:not(:placeholder-shown) ~ label {
-    top: -0.5rem;
-    left: 0.75rem;
-    font-size: 0.875rem;
-    color: var(--primary-color);
-}
-
-/* Password Input */
-.toggle-password {
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--text-light);
-    cursor: pointer;
-    padding: 0;
-    font-size: 1.25rem;
-    transition: var(--transition);
-    z-index: 1;
-}
-
-.toggle-password:hover {
-    color: var(--primary-color);
-}
-
-/* Password Strength Indicator */
-.password-strength {
-    margin-top: 0.5rem;
-}
-
-.strength-bars {
-    display: flex;
-    gap: 0.25rem;
-    margin-bottom: 0.25rem;
-}
-
-.strength-bars .bar {
-    height: 4px;
-    flex: 1;
-    background-color: #E2E8F0;
-    border-radius: 2px;
-    transition: var(--transition);
-}
-
-.strength-text {
-    font-size: 0.875rem;
-    color: var(--text-light);
-}
-
-/* Social Auth */
-.auth-divider {
-    text-align: center;
-    margin: 2rem 0;
-    position: relative;
-}
-
-.auth-divider::before,
-.auth-divider::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    width: calc(50% - 3rem);
-    height: 1px;
-    background-color: #E2E8F0;
-}
-
-.auth-divider::before {
-    left: 0;
-}
-
-.auth-divider::after {
-    right: 0;
-}
-
-.auth-divider span {
-    background-color: var(--white);
-    padding: 0 1rem;
-    color: var(--text-light);
-    font-size: 0.875rem;
-}
-
-.social-auth {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.btn-social {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border: 2px solid #E2E8F0;
-    border-radius: var(--radius-md);
-    background: var(--white);
-    color: var(--text-color);
-    font-weight: 500;
-    transition: var(--transition);
-}
-
-.btn-social i {
-    font-size: 1.25rem;
-}
-
-.btn-google {
-    border-color: #EA4335;
-    color: #EA4335;
-}
-
-.btn-google:hover {
-    background: #EA4335;
-    color: var(--white);
-}
-
-.btn-facebook {
-    border-color: #1877F2;
-    color: #1877F2;
-}
-
-.btn-facebook:hover {
-    background: #1877F2;
-    color: var(--white);
-}
-
-.btn-block {
+.form-group input {
     width: 100%;
-    justify-content: center;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-group input:focus ~ label,
+.form-group input:not(:placeholder-shown) ~ label {
+    top: -0.5rem;
+    left: 0.8rem;
+    font-size: 0.8rem;
+    color: #065F46;
+    background: white;
+    padding: 0 0.2rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #065F46, #34D399);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(6, 95, 70, 0.3);
 }
 
 .auth-footer {
     text-align: center;
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid #E2E8F0;
+    margin-top: 1.5rem;
+    color: #666;
 }
 
 .auth-footer a {
-    color: var(--primary-color);
+    color: #065F46;
     text-decoration: none;
-    font-weight: 500;
 }
 
 .auth-footer a:hover {
     text-decoration: underline;
 }
 
-/* Form Options */
-.form-options {
+/* Mobile Dashboard Styles */
+/* Ensure .container for dashboard uses general styles or specific overrides if needed */
+.dashboard-container { /* Changed from .container to avoid conflict if dashboard needs full width */
+    padding: var(--spacing-lg);
+    margin: 0; /* Reset margin for full-width feel if intended */
+    background: var(--background-color); /* Use theme background */
+}
+
+.mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    margin-bottom: var(--spacing-xl);
+    border-bottom: var(--border-width) solid var(--border-color); /* Add a separator */
+}
+
+.mobile-header .header-left h1 {
+    font-size: 1.75rem; /* Consistent with h2 */
+    margin: 0;
+    color: var(--primary-color); /* Theme color */
+    font-weight: 600;
+}
+
+.mobile-header .header-right {
     display: flex;
     align-items: center;
+    gap: var(--spacing-md);
+}
+
+.mobile-header .user-info { /* This was commented out in HTML, but styling for consistency */
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.mobile-header .notification-icon {
+    color: var(--text-color);
+    font-size: 1.5rem; /* Material icon size */
+}
+
+.mobile-header .wallet-amount {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+}
+
+/* Summary Cards */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.summary-card {
+    background: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg); /* Consistent radius */
+    box-shadow: var(--shadow-md); /* Slightly more prominent shadow */
+    transition: transform var(--transition-duration) var(--transition-timing), box-shadow var(--transition-duration) var(--transition-timing);
+}
+
+.summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.summary-card h3 { /* Standardize heading inside card */
+    font-size: 1rem; /* Consistent with h5 or a bit larger */
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--text-light); /* Lighter color for card subheadings */
+    font-weight: 500;
+}
+
+.summary-card .amount {
+    font-size: 1.75rem; /* Larger amount text */
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color); /* Default to main text color */
+}
+
+/* Specific card amount colors - can be kept or themed */
+.summary-card.income .amount {
+    color: var(--success-color); /* Use theme success color */
+}
+
+.summary-card.expense .amount {
+    color: var(--danger-color); /* Use theme danger color */
+}
+
+.summary-card.balance .amount {
+    color: var(--primary-color); /* Use theme primary for balance */
+}
+
+.summary-card.transaction .amount {
+    color: var(--secondary-color); /* Use theme secondary for transactions */
+}
+
+/* Budgeting Section */
+.budgeting-section {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.budgeting-section h2 {
+    font-size: 1.5rem; /* Consistent with h3 */
+    margin-top: 0;
+    margin-bottom: var(--spacing-lg);
+    color: var(--primary-color);
+    font-weight: 600;
+    text-align: center;
+}
+
+.budget-buttons {
+    display: grid; /* Use grid for better alignment and responsiveness */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.budget-button {
+    background: var(--primary-light); /* Use theme color */
+    color: var(--primary-color); /* Darker text for contrast on light bg */
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600; /* Bolder text */
+    font-size: 1rem;
+    transition: all var(--transition-duration) var(--transition-timing);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width) solid var(--primary-color); /* Add border */
+}
+
+.budget-button:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+}
+
+/* AI Financial Planning Page Styles */
+.financial-info-section {
+    margin: 30px auto;
+    padding: 20px;
+    background: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.financial-info-section h2 {
+    color: var(--primary-color);
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.financial-inputs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.financial-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    font-size: 16px;
+    color: var(--text-color);
+    background: var(--white);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all var(--transition-duration) var(--transition-timing);
+}
+
+.financial-input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 2px 8px rgba(0,191,255,0.2);
+}
+
+.financial-input::placeholder {
+    color: var(--text-light);
+}
+
+.action-buttons {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.analyze-button, .save-button {
+    flex: 1;
+    max-width: 300px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-duration) var(--transition-timing);
+    box-shadow: var(--shadow-sm);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+}
+
+.analyze-button {
+    background-color: var(--secondary-color);
+}
+
+.analyze-button:hover {
+    background-color: #0095D9;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.save-button {
+    background-color: var(--success-color);
+}
+
+.save-button:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.analyze-button:active, .save-button:active {
+    transform: translateY(0);
+}
+
+.analysis-results {
+    margin: 20px auto;
+    padding: 20px;
+    background: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.analysis-results h3 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.metric {
+    display: flex;
     justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.metric:last-child {
+    border-bottom: none;
+}
+
+.label {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.value {
+    font-weight: 600;
+    color: var(--secondary-color);
+}
+
+.financial-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.financial-form textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    font-size: 16px;
+    resize: vertical;
+}
+
+.financial-form button {
+    align-self: flex-end;
+}
+
+.response-content {
+    background-color: var(--background-color);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-md);
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .financial-inputs-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .analyze-button, .save-button {
+        width: 100%;
+    }
+}
+
+/* Mobile Container */
+.mobile-container {
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0;
+    background-color: #fff;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Status Bar */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px 10px;
+    background-color: #fff;
+}
+
+.time {
+    font-weight: 600;
+    font-size: 14px;
+    color: #000;
+}
+
+.status-icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.signal {
+    width: 18px;
+    height: 12px;
+    background: linear-gradient(90deg, #000 60%, #d1d1d6 60%);
+    border-radius: 1px;
+}
+
+.wifi {
+    width: 16px;
+    height: 12px;
+    background: radial-gradient(circle at center, #000 60%, transparent 60%);
+}
+
+.battery {
+    width: 24px;
+    height: 12px;
+    background-color: #000;
+    border-radius: 3px;
+    position: relative;
+}
+
+.battery::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 4px;
+    background-color: #000;
+    border-radius: 0 1px 1px 0;
+}
+
+/* Header */
+.mobile-container h1 {
+    color: #0C7D5F;
+    font-size: 20px;
+    margin: 16px 20px;
+    font-weight: 600;
+}
+
+/* Tabs */
+.tabs {
+    border-bottom: 2px solid #e0e0e0;
+    margin: 0 20px 24px;
+}
+
+.tab {
+    display: inline-block;
+    padding: 8px 0;
+    color: #1F3478;
+    font-weight: 600;
+    position: relative;
+    font-size: 14px;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #0C7D5F;
+}
+
+/* Expenses Overview */
+.expenses-overview {
+    margin: 0 20px 32px;
+}
+
+.expenses-overview h2 {
+    font-size: 16px;
+    color: #0C3478;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.chart-container {
+    position: relative;
+    height: 320px;
+    margin: 0 -20px;
+    padding: 0;
+}
+
+/* AI Advice Section */
+.ai-advice {
+    margin: 32px 20px;
+}
+
+.ai-advice h2 {
+    font-size: 16px;
+    color: #1a237e;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.advice-content {
+    background-color: #F8F7FF;
+    border-radius: 16px;
+    padding: 20px;
+    min-height: 120px;
+    line-height: 1.6;
+    color: #1a237e;
+}
+
+/* New Auth Form Styles */
+.auth-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    color: #065F46;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #666;
+}
+
+.form-group {
+    position: relative;
     margin-bottom: 1.5rem;
 }
 
-.remember-me {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    user-select: none;
-}
-
-.remember-me input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 1.25rem;
-    height: 1.25rem;
-    border: 2px solid #E2E8F0;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    position: relative;
-    transition: var(--transition);
-}
-
-.remember-me input[type="checkbox"]:checked {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-}
-
-.remember-me input[type="checkbox"]:checked::after {
-    content: '';
+.form-group label {
     position: absolute;
-    left: 4px;
-    top: 1px;
-    width: 6px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
+    top: 1rem;
+    left: 1rem;
+    color: #999;
+    transition: all 0.3s ease;
+    pointer-events: none;
 }
 
-.remember-me input[type="checkbox"]:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1);
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
 }
 
-.remember-me span {
-    color: var(--text-color);
-    font-size: 0.875rem;
+.form-group input:focus ~ label,
+.form-group input:not(:placeholder-shown) ~ label {
+    top: -0.5rem;
+    left: 0.8rem;
+    font-size: 0.8rem;
+    color: #065F46;
+    background: white;
+    padding: 0 0.2rem;
 }
 
-.forgot-password {
-    color: var(--primary-color);
+.btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #065F46, #34D399);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(6, 95, 70, 0.3);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #666;
+}
+
+.auth-footer a {
+    color: #065F46;
     text-decoration: none;
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition: var(--transition);
 }
 
-.forgot-password:hover {
-    color: var(--primary-light);
+.auth-footer a:hover {
     text-decoration: underline;
 }
 
-/* Responsive Auth */
-@media (max-width: 480px) {
-    .auth-card {
-        padding: 2rem 1.5rem;
-    }
-
-    .form-options {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
-    }
-
-    .social-auth {
-        grid-template-columns: 1fr;
-    }
+/* Mobile Dashboard Styles */
+/* Ensure .container for dashboard uses general styles or specific overrides if needed */
+.dashboard-container { /* Changed from .container to avoid conflict if dashboard needs full width */
+    padding: var(--spacing-lg);
+    margin: 0; /* Reset margin for full-width feel if intended */
+    background: var(--background-color); /* Use theme background */
 }
 
-/* Alert Messages */
-.alert {
-    padding: 1rem 1.5rem;
-    border-radius: var(--radius-md);
-    margin: 1rem 0;
+.mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    margin-bottom: var(--spacing-xl);
+    border-bottom: var(--border-width) solid var(--border-color); /* Add a separator */
+}
+
+.mobile-header .header-left h1 {
+    font-size: 1.75rem; /* Consistent with h2 */
+    margin: 0;
+    color: var(--primary-color); /* Theme color */
+    font-weight: 600;
+}
+
+.mobile-header .header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.mobile-header .user-info { /* This was commented out in HTML, but styling for consistency */
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.mobile-header .notification-icon {
+    color: var(--text-color);
+    font-size: 1.5rem; /* Material icon size */
+}
+
+.mobile-header .wallet-amount {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+}
+
+/* Summary Cards */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.summary-card {
     background: var(--white);
-    border-left: 4px solid var(--primary-color);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg); /* Consistent radius */
+    box-shadow: var(--shadow-md); /* Slightly more prominent shadow */
+    transition: transform var(--transition-duration) var(--transition-timing), box-shadow var(--transition-duration) var(--transition-timing);
+}
+
+.summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.summary-card h3 { /* Standardize heading inside card */
+    font-size: 1rem; /* Consistent with h5 or a bit larger */
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--text-light); /* Lighter color for card subheadings */
+    font-weight: 500;
+}
+
+.summary-card .amount {
+    font-size: 1.75rem; /* Larger amount text */
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color); /* Default to main text color */
+}
+
+/* Specific card amount colors - can be kept or themed */
+.summary-card.income .amount {
+    color: var(--success-color); /* Use theme success color */
+}
+
+.summary-card.expense .amount {
+    color: var(--danger-color); /* Use theme danger color */
+}
+
+.summary-card.balance .amount {
+    color: var(--primary-color); /* Use theme primary for balance */
+}
+
+.summary-card.transaction .amount {
+    color: var(--secondary-color); /* Use theme secondary for transactions */
+}
+
+/* Budgeting Section */
+.budgeting-section {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.budgeting-section h2 {
+    font-size: 1.5rem; /* Consistent with h3 */
+    margin-top: 0;
+    margin-bottom: var(--spacing-lg);
+    color: var(--primary-color);
+    font-weight: 600;
+    text-align: center;
+}
+
+.budget-buttons {
+    display: grid; /* Use grid for better alignment and responsiveness */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.budget-button {
+    background: var(--primary-light); /* Use theme color */
+    color: var(--primary-color); /* Darker text for contrast on light bg */
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600; /* Bolder text */
+    font-size: 1rem;
+    transition: all var(--transition-duration) var(--transition-timing);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width) solid var(--primary-color); /* Add border */
+}
+
+.budget-button:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-sm);
-    animation: slideIn 0.3s ease-out;
 }
 
-@keyframes slideIn {
-    from {
-        transform: translateY(-10px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-/* Responsive Design */
 @media (max-width: 768px) {
-    .container {
-        width: 95%;
-        padding: 1rem;
-        margin: 1rem auto;
+    .auth-container {
+        margin: 1rem;
+        padding: 1.5rem;
     }
+}
 
-    .header-container {
-        padding: 0.75rem 1rem;
+/* Mobile Container */
+.mobile-container {
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0;
+    background-color: #fff;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Status Bar */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px 10px;
+    background-color: #fff;
+}
+
+.time {
+    font-weight: 600;
+    font-size: 14px;
+    color: #000;
+}
+
+.status-icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.signal {
+    width: 18px;
+    height: 12px;
+    background: linear-gradient(90deg, #000 60%, #d1d1d6 60%);
+    border-radius: 1px;
+}
+
+.wifi {
+    width: 16px;
+    height: 12px;
+    background: radial-gradient(circle at center, #000 60%, transparent 60%);
+}
+
+.battery {
+    width: 24px;
+    height: 12px;
+    background-color: #000;
+    border-radius: 3px;
+    position: relative;
+}
+
+.battery::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 4px;
+    background-color: #000;
+    border-radius: 0 1px 1px 0;
+}
+
+/* Header */
+.mobile-container h1 {
+    color: #0C7D5F;
+    font-size: 20px;
+    margin: 16px 20px;
+    font-weight: 600;
+}
+
+/* Tabs */
+.tabs {
+    border-bottom: 2px solid #e0e0e0;
+    margin: 0 20px 24px;
+}
+
+.tab {
+    display: inline-block;
+    padding: 8px 0;
+    color: #1F3478;
+    font-weight: 600;
+    position: relative;
+    font-size: 14px;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #0C7D5F;
+}
+
+/* Expenses Overview */
+.expenses-overview {
+    margin: 0 20px 32px;
+}
+
+.expenses-overview h2 {
+    font-size: 16px;
+    color: #0C3478;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.chart-container {
+    position: relative;
+    height: 320px;
+    margin: 0 -20px;
+    padding: 0;
+}
+
+/* AI Advice Section */
+.ai-advice {
+    margin: 32px 20px;
+}
+
+.ai-advice h2 {
+    font-size: 16px;
+    color: #1a237e;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.advice-content {
+    background-color: #F8F7FF;
+    border-radius: 16px;
+    padding: 20px;
+    min-height: 120px;
+    line-height: 1.6;
+    color: #1a237e;
+}
+
+/* New Auth Form Styles */
+.auth-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    color: #065F46;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #666;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: #999;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-group input:focus ~ label,
+.form-group input:not(:placeholder-shown) ~ label {
+    top: -0.5rem;
+    left: 0.8rem;
+    font-size: 0.8rem;
+    color: #065F46;
+    background: white;
+    padding: 0 0.2rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #065F46, #34D399);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(6, 95, 70, 0.3);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #666;
+}
+
+.auth-footer a {
+    color: #065F46;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile Dashboard Styles */
+/* Ensure .container for dashboard uses general styles or specific overrides if needed */
+.dashboard-container { /* Changed from .container to avoid conflict if dashboard needs full width */
+    padding: var(--spacing-lg);
+    margin: 0; /* Reset margin for full-width feel if intended */
+    background: var(--background-color); /* Use theme background */
+}
+
+.mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    margin-bottom: var(--spacing-xl);
+    border-bottom: var(--border-width) solid var(--border-color); /* Add a separator */
+}
+
+.mobile-header .header-left h1 {
+    font-size: 1.75rem; /* Consistent with h2 */
+    margin: 0;
+    color: var(--primary-color); /* Theme color */
+    font-weight: 600;
+}
+
+.mobile-header .header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.mobile-header .user-info { /* This was commented out in HTML, but styling for consistency */
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.mobile-header .notification-icon {
+    color: var(--text-color);
+    font-size: 1.5rem; /* Material icon size */
+}
+
+.mobile-header .wallet-amount {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+}
+
+/* Summary Cards */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.summary-card {
+    background: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg); /* Consistent radius */
+    box-shadow: var(--shadow-md); /* Slightly more prominent shadow */
+    transition: transform var(--transition-duration) var(--transition-timing), box-shadow var(--transition-duration) var(--transition-timing);
+}
+
+.summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.summary-card h3 { /* Standardize heading inside card */
+    font-size: 1rem; /* Consistent with h5 or a bit larger */
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--text-light); /* Lighter color for card subheadings */
+    font-weight: 500;
+}
+
+.summary-card .amount {
+    font-size: 1.75rem; /* Larger amount text */
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color); /* Default to main text color */
+}
+
+/* Specific card amount colors - can be kept or themed */
+.summary-card.income .amount {
+    color: var(--success-color); /* Use theme success color */
+}
+
+.summary-card.expense .amount {
+    color: var(--danger-color); /* Use theme danger color */
+}
+
+.summary-card.balance .amount {
+    color: var(--primary-color); /* Use theme primary for balance */
+}
+
+.summary-card.transaction .amount {
+    color: var(--secondary-color); /* Use theme secondary for transactions */
+}
+
+/* Budgeting Section */
+.budgeting-section {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.budgeting-section h2 {
+    font-size: 1.5rem; /* Consistent with h3 */
+    margin-top: 0;
+    margin-bottom: var(--spacing-lg);
+    color: var(--primary-color);
+    font-weight: 600;
+    text-align: center;
+}
+
+.budget-buttons {
+    display: grid; /* Use grid for better alignment and responsiveness */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.budget-button {
+    background: var(--primary-light); /* Use theme color */
+    color: var(--primary-color); /* Darker text for contrast on light bg */
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600; /* Bolder text */
+    font-size: 1rem;
+    transition: all var(--transition-duration) var(--transition-timing);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width) solid var(--primary-color); /* Add border */
+}
+
+.budget-button:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 1rem;
+        padding: 1.5rem;
     }
+}
 
-    .hamburger {
-        display: flex;
+/* Mobile Container */
+.mobile-container {
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0;
+    background-color: #fff;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Status Bar */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px 10px;
+    background-color: #fff;
+}
+
+.time {
+    font-weight: 600;
+    font-size: 14px;
+    color: #000;
+}
+
+.status-icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.signal {
+    width: 18px;
+    height: 12px;
+    background: linear-gradient(90deg, #000 60%, #d1d1d6 60%);
+    border-radius: 1px;
+}
+
+.wifi {
+    width: 16px;
+    height: 12px;
+    background: radial-gradient(circle at center, #000 60%, transparent 60%);
+}
+
+.battery {
+    width: 24px;
+    height: 12px;
+    background-color: #000;
+    border-radius: 3px;
+    position: relative;
+}
+
+.battery::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 4px;
+    background-color: #000;
+    border-radius: 0 1px 1px 0;
+}
+
+/* Header */
+.mobile-container h1 {
+    color: #0C7D5F;
+    font-size: 20px;
+    margin: 16px 20px;
+    font-weight: 600;
+}
+
+/* Tabs */
+.tabs {
+    border-bottom: 2px solid #e0e0e0;
+    margin: 0 20px 24px;
+}
+
+.tab {
+    display: inline-block;
+    padding: 8px 0;
+    color: #1F3478;
+    font-weight: 600;
+    position: relative;
+    font-size: 14px;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #0C7D5F;
+}
+
+/* Expenses Overview */
+.expenses-overview {
+    margin: 0 20px 32px;
+}
+
+.expenses-overview h2 {
+    font-size: 16px;
+    color: #0C3478;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.chart-container {
+    position: relative;
+    height: 320px;
+    margin: 0 -20px;
+    padding: 0;
+}
+
+/* AI Advice Section */
+.ai-advice {
+    margin: 32px 20px;
+}
+
+.ai-advice h2 {
+    font-size: 16px;
+    color: #1a237e;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.advice-content {
+    background-color: #F8F7FF;
+    border-radius: 16px;
+    padding: 20px;
+    min-height: 120px;
+    line-height: 1.6;
+    color: #1a237e;
+}
+
+/* New Auth Form Styles */
+.auth-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    color: #065F46;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #666;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: #999;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-group input:focus ~ label,
+.form-group input:not(:placeholder-shown) ~ label {
+    top: -0.5rem;
+    left: 0.8rem;
+    font-size: 0.8rem;
+    color: #065F46;
+    background: white;
+    padding: 0 0.2rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #065F46, #34D399);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(6, 95, 70, 0.3);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #666;
+}
+
+.auth-footer a {
+    color: #065F46;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile Dashboard Styles */
+/* Ensure .container for dashboard uses general styles or specific overrides if needed */
+.dashboard-container { /* Changed from .container to avoid conflict if dashboard needs full width */
+    padding: var(--spacing-lg);
+    margin: 0; /* Reset margin for full-width feel if intended */
+    background: var(--background-color); /* Use theme background */
+}
+
+.mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    margin-bottom: var(--spacing-xl);
+    border-bottom: var(--border-width) solid var(--border-color); /* Add a separator */
+}
+
+.mobile-header .header-left h1 {
+    font-size: 1.75rem; /* Consistent with h2 */
+    margin: 0;
+    color: var(--primary-color); /* Theme color */
+    font-weight: 600;
+}
+
+.mobile-header .header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.mobile-header .user-info { /* This was commented out in HTML, but styling for consistency */
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.mobile-header .notification-icon {
+    color: var(--text-color);
+    font-size: 1.5rem; /* Material icon size */
+}
+
+.mobile-header .wallet-amount {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+}
+
+/* Summary Cards */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.summary-card {
+    background: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg); /* Consistent radius */
+    box-shadow: var(--shadow-md); /* Slightly more prominent shadow */
+    transition: transform var(--transition-duration) var(--transition-timing), box-shadow var(--transition-duration) var(--transition-timing);
+}
+
+.summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.summary-card h3 { /* Standardize heading inside card */
+    font-size: 1rem; /* Consistent with h5 or a bit larger */
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--text-light); /* Lighter color for card subheadings */
+    font-weight: 500;
+}
+
+.summary-card .amount {
+    font-size: 1.75rem; /* Larger amount text */
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color); /* Default to main text color */
+}
+
+/* Specific card amount colors - can be kept or themed */
+.summary-card.income .amount {
+    color: var(--success-color); /* Use theme success color */
+}
+
+.summary-card.expense .amount {
+    color: var(--danger-color); /* Use theme danger color */
+}
+
+.summary-card.balance .amount {
+    color: var(--primary-color); /* Use theme primary for balance */
+}
+
+.summary-card.transaction .amount {
+    color: var(--secondary-color); /* Use theme secondary for transactions */
+}
+
+/* Budgeting Section */
+.budgeting-section {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.budgeting-section h2 {
+    font-size: 1.5rem; /* Consistent with h3 */
+    margin-top: 0;
+    margin-bottom: var(--spacing-lg);
+    color: var(--primary-color);
+    font-weight: 600;
+    text-align: center;
+}
+
+.budget-buttons {
+    display: grid; /* Use grid for better alignment and responsiveness */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.budget-button {
+    background: var(--primary-light); /* Use theme color */
+    color: var(--primary-color); /* Darker text for contrast on light bg */
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600; /* Bolder text */
+    font-size: 1rem;
+    transition: all var(--transition-duration) var(--transition-timing);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width) solid var(--primary-color); /* Add border */
+}
+
+.budget-button:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 1rem;
+        padding: 1.5rem;
     }
+}
 
-    .nav-links {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: var(--white);
-        flex-direction: column;
-        gap: 0;
-        box-shadow: var(--shadow-md);
-        padding: 1rem 0;
+/* Mobile Container */
+.mobile-container {
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0;
+    background-color: #fff;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Status Bar */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px 10px;
+    background-color: #fff;
+}
+
+.time {
+    font-weight: 600;
+    font-size: 14px;
+    color: #000;
+}
+
+.status-icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.signal {
+    width: 18px;
+    height: 12px;
+    background: linear-gradient(90deg, #000 60%, #d1d1d6 60%);
+    border-radius: 1px;
+}
+
+.wifi {
+    width: 16px;
+    height: 12px;
+    background: radial-gradient(circle at center, #000 60%, transparent 60%);
+}
+
+.battery {
+    width: 24px;
+    height: 12px;
+    background-color: #000;
+    border-radius: 3px;
+    position: relative;
+}
+
+.battery::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 4px;
+    background-color: #000;
+    border-radius: 0 1px 1px 0;
+}
+
+/* Header */
+.mobile-container h1 {
+    color: #0C7D5F;
+    font-size: 20px;
+    margin: 16px 20px;
+    font-weight: 600;
+}
+
+/* Tabs */
+.tabs {
+    border-bottom: 2px solid #e0e0e0;
+    margin: 0 20px 24px;
+}
+
+.tab {
+    display: inline-block;
+    padding: 8px 0;
+    color: #1F3478;
+    font-weight: 600;
+    position: relative;
+    font-size: 14px;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #0C7D5F;
+}
+
+/* Expenses Overview */
+.expenses-overview {
+    margin: 0 20px 32px;
+}
+
+.expenses-overview h2 {
+    font-size: 16px;
+    color: #0C3478;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.chart-container {
+    position: relative;
+    height: 320px;
+    margin: 0 -20px;
+    padding: 0;
+}
+
+/* AI Advice Section */
+.ai-advice {
+    margin: 32px 20px;
+}
+
+.ai-advice h2 {
+    font-size: 16px;
+    color: #1a237e;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.advice-content {
+    background-color: #F8F7FF;
+    border-radius: 16px;
+    padding: 20px;
+    min-height: 120px;
+    line-height: 1.6;
+    color: #1a237e;
+}
+
+/* New Auth Form Styles */
+.auth-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    color: #065F46;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #666;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: #999;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-group input:focus ~ label,
+.form-group input:not(:placeholder-shown) ~ label {
+    top: -0.5rem;
+    left: 0.8rem;
+    font-size: 0.8rem;
+    color: #065F46;
+    background: white;
+    padding: 0 0.2rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #065F46, #34D399);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(6, 95, 70, 0.3);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #666;
+}
+
+.auth-footer a {
+    color: #065F46;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile Dashboard Styles */
+/* Ensure .container for dashboard uses general styles or specific overrides if needed */
+.dashboard-container { /* Changed from .container to avoid conflict if dashboard needs full width */
+    padding: var(--spacing-lg);
+    margin: 0; /* Reset margin for full-width feel if intended */
+    background: var(--background-color); /* Use theme background */
+}
+
+.mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    margin-bottom: var(--spacing-xl);
+    border-bottom: var(--border-width) solid var(--border-color); /* Add a separator */
+}
+
+.mobile-header .header-left h1 {
+    font-size: 1.75rem; /* Consistent with h2 */
+    margin: 0;
+    color: var(--primary-color); /* Theme color */
+    font-weight: 600;
+}
+
+.mobile-header .header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.mobile-header .user-info { /* This was commented out in HTML, but styling for consistency */
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.mobile-header .notification-icon {
+    color: var(--text-color);
+    font-size: 1.5rem; /* Material icon size */
+}
+
+.mobile-header .wallet-amount {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+}
+
+/* Summary Cards */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.summary-card {
+    background: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg); /* Consistent radius */
+    box-shadow: var(--shadow-md); /* Slightly more prominent shadow */
+    transition: transform var(--transition-duration) var(--transition-timing), box-shadow var(--transition-duration) var(--transition-timing);
+}
+
+.summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.summary-card h3 { /* Standardize heading inside card */
+    font-size: 1rem; /* Consistent with h5 or a bit larger */
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--text-light); /* Lighter color for card subheadings */
+    font-weight: 500;
+}
+
+.summary-card .amount {
+    font-size: 1.75rem; /* Larger amount text */
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color); /* Default to main text color */
+}
+
+/* Specific card amount colors - can be kept or themed */
+.summary-card.income .amount {
+    color: var(--success-color); /* Use theme success color */
+}
+
+.summary-card.expense .amount {
+    color: var(--danger-color); /* Use theme danger color */
+}
+
+.summary-card.balance .amount {
+    color: var(--primary-color); /* Use theme primary for balance */
+}
+
+.summary-card.transaction .amount {
+    color: var(--secondary-color); /* Use theme secondary for transactions */
+}
+
+/* Budgeting Section */
+.budgeting-section {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.budgeting-section h2 {
+    font-size: 1.5rem; /* Consistent with h3 */
+    margin-top: 0;
+    margin-bottom: var(--spacing-lg);
+    color: var(--primary-color);
+    font-weight: 600;
+    text-align: center;
+}
+
+.budget-buttons {
+    display: grid; /* Use grid for better alignment and responsiveness */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.budget-button {
+    background: var(--primary-light); /* Use theme color */
+    color: var(--primary-color); /* Darker text for contrast on light bg */
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600; /* Bolder text */
+    font-size: 1rem;
+    transition: all var(--transition-duration) var(--transition-timing);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width) solid var(--primary-color); /* Add border */
+}
+
+.budget-button:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 1rem;
+        padding: 1.5rem;
     }
+}
 
-    .nav-links.active {
-        display: flex;
+/* Mobile Container */
+.mobile-container {
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0;
+    background-color: #fff;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Status Bar */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px 10px;
+    background-color: #fff;
+}
+
+.time {
+    font-weight: 600;
+    font-size: 14px;
+    color: #000;
+}
+
+.status-icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.signal {
+    width: 18px;
+    height: 12px;
+    background: linear-gradient(90deg, #000 60%, #d1d1d6 60%);
+    border-radius: 1px;
+}
+
+.wifi {
+    width: 16px;
+    height: 12px;
+    background: radial-gradient(circle at center, #000 60%, transparent 60%);
+}
+
+.battery {
+    width: 24px;
+    height: 12px;
+    background-color: #000;
+    border-radius: 3px;
+    position: relative;
+}
+
+.battery::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 4px;
+    background-color: #000;
+    border-radius: 0 1px 1px 0;
+}
+
+/* Header */
+.mobile-container h1 {
+    color: #0C7D5F;
+    font-size: 20px;
+    margin: 16px 20px;
+    font-weight: 600;
+}
+
+/* Tabs */
+.tabs {
+    border-bottom: 2px solid #e0e0e0;
+    margin: 0 20px 24px;
+}
+
+.tab {
+    display: inline-block;
+    padding: 8px 0;
+    color: #1F3478;
+    font-weight: 600;
+    position: relative;
+    font-size: 14px;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #0C7D5F;
+}
+
+/* Expenses Overview */
+.expenses-overview {
+    margin: 0 20px 32px;
+}
+
+.expenses-overview h2 {
+    font-size: 16px;
+    color: #0C3478;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.chart-container {
+    position: relative;
+    height: 320px;
+    margin: 0 -20px;
+    padding: 0;
+}
+
+/* AI Advice Section */
+.ai-advice {
+    margin: 32px 20px;
+}
+
+.ai-advice h2 {
+    font-size: 16px;
+    color: #1a237e;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.advice-content {
+    background-color: #F8F7FF;
+    border-radius: 16px;
+    padding: 20px;
+    min-height: 120px;
+    line-height: 1.6;
+    color: #1a237e;
+}
+
+/* New Auth Form Styles */
+.auth-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    color: #065F46;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #666;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: #999;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-group input:focus ~ label,
+.form-group input:not(:placeholder-shown) ~ label {
+    top: -0.5rem;
+    left: 0.8rem;
+    font-size: 0.8rem;
+    color: #065F46;
+    background: white;
+    padding: 0 0.2rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #065F46, #34D399);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(6, 95, 70, 0.3);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #666;
+}
+
+.auth-footer a {
+    color: #065F46;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile Dashboard Styles */
+/* Ensure .container for dashboard uses general styles or specific overrides if needed */
+.dashboard-container { /* Changed from .container to avoid conflict if dashboard needs full width */
+    padding: var(--spacing-lg);
+    margin: 0; /* Reset margin for full-width feel if intended */
+    background: var(--background-color); /* Use theme background */
+}
+
+.mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    margin-bottom: var(--spacing-xl);
+    border-bottom: var(--border-width) solid var(--border-color); /* Add a separator */
+}
+
+.mobile-header .header-left h1 {
+    font-size: 1.75rem; /* Consistent with h2 */
+    margin: 0;
+    color: var(--primary-color); /* Theme color */
+    font-weight: 600;
+}
+
+.mobile-header .header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.mobile-header .user-info { /* This was commented out in HTML, but styling for consistency */
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.mobile-header .notification-icon {
+    color: var(--text-color);
+    font-size: 1.5rem; /* Material icon size */
+}
+
+.mobile-header .wallet-amount {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+}
+
+/* Summary Cards */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.summary-card {
+    background: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg); /* Consistent radius */
+    box-shadow: var(--shadow-md); /* Slightly more prominent shadow */
+    transition: transform var(--transition-duration) var(--transition-timing), box-shadow var(--transition-duration) var(--transition-timing);
+}
+
+.summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.summary-card h3 { /* Standardize heading inside card */
+    font-size: 1rem; /* Consistent with h5 or a bit larger */
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--text-light); /* Lighter color for card subheadings */
+    font-weight: 500;
+}
+
+.summary-card .amount {
+    font-size: 1.75rem; /* Larger amount text */
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color); /* Default to main text color */
+}
+
+/* Specific card amount colors - can be kept or themed */
+.summary-card.income .amount {
+    color: var(--success-color); /* Use theme success color */
+}
+
+.summary-card.expense .amount {
+    color: var(--danger-color); /* Use theme danger color */
+}
+
+.summary-card.balance .amount {
+    color: var(--primary-color); /* Use theme primary for balance */
+}
+
+.summary-card.transaction .amount {
+    color: var(--secondary-color); /* Use theme secondary for transactions */
+}
+
+/* Budgeting Section */
+.budgeting-section {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.budgeting-section h2 {
+    font-size: 1.5rem; /* Consistent with h3 */
+    margin-top: 0;
+    margin-bottom: var(--spacing-lg);
+    color: var(--primary-color);
+    font-weight: 600;
+    text-align: center;
+}
+
+.budget-buttons {
+    display: grid; /* Use grid for better alignment and responsiveness */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.budget-button {
+    background: var(--primary-light); /* Use theme color */
+    color: var(--primary-color); /* Darker text for contrast on light bg */
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600; /* Bolder text */
+    font-size: 1rem;
+    transition: all var(--transition-duration) var(--transition-timing);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width) solid var(--primary-color); /* Add border */
+}
+
+.budget-button:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 1rem;
+        padding: 1.5rem;
     }
+}
 
-    .nav-link {
-        padding: 1rem 1.5rem;
-        width: 100%;
-        border-radius: 0;
+/* Mobile Container */
+.mobile-container {
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0;
+    background-color: #fff;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Status Bar */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px 10px;
+    background-color: #fff;
+}
+
+.time {
+    font-weight: 600;
+    font-size: 14px;
+    color: #000;
+}
+
+.status-icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.signal {
+    width: 18px;
+    height: 12px;
+    background: linear-gradient(90deg, #000 60%, #d1d1d6 60%);
+    border-radius: 1px;
+}
+
+.wifi {
+    width: 16px;
+    height: 12px;
+    background: radial-gradient(circle at center, #000 60%, transparent 60%);
+}
+
+.battery {
+    width: 24px;
+    height: 12px;
+    background-color: #000;
+    border-radius: 3px;
+    position: relative;
+}
+
+.battery::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 4px;
+    background-color: #000;
+    border-radius: 0 1px 1px 0;
+}
+
+/* Header */
+.mobile-container h1 {
+    color: #0C7D5F;
+    font-size: 20px;
+    margin: 16px 20px;
+    font-weight: 600;
+}
+
+/* Tabs */
+.tabs {
+    border-bottom: 2px solid #e0e0e0;
+    margin: 0 20px 24px;
+}
+
+.tab {
+    display: inline-block;
+    padding: 8px 0;
+    color: #1F3478;
+    font-weight: 600;
+    position: relative;
+    font-size: 14px;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #0C7D5F;
+}
+
+/* Expenses Overview */
+.expenses-overview {
+    margin: 0 20px 32px;
+}
+
+.expenses-overview h2 {
+    font-size: 16px;
+    color: #0C3478;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.chart-container {
+    position: relative;
+    height: 320px;
+    margin: 0 -20px;
+    padding: 0;
+}
+
+/* AI Advice Section */
+.ai-advice {
+    margin: 32px 20px;
+}
+
+.ai-advice h2 {
+    font-size: 16px;
+    color: #1a237e;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.advice-content {
+    background-color: #F8F7FF;
+    border-radius: 16px;
+    padding: 20px;
+    min-height: 120px;
+    line-height: 1.6;
+    color: #1a237e;
+}
+
+/* New Auth Form Styles */
+.auth-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    color: #065F46;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #666;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: #999;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-group input:focus ~ label,
+.form-group input:not(:placeholder-shown) ~ label {
+    top: -0.5rem;
+    left: 0.8rem;
+    font-size: 0.8rem;
+    color: #065F46;
+    background: white;
+    padding: 0 0.2rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #065F46, #34D399);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(6, 95, 70, 0.3);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #666;
+}
+
+.auth-footer a {
+    color: #065F46;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile Dashboard Styles */
+/* Ensure .container for dashboard uses general styles or specific overrides if needed */
+.dashboard-container { /* Changed from .container to avoid conflict if dashboard needs full width */
+    padding: var(--spacing-lg);
+    margin: 0; /* Reset margin for full-width feel if intended */
+    background: var(--background-color); /* Use theme background */
+}
+
+.mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    margin-bottom: var(--spacing-xl);
+    border-bottom: var(--border-width) solid var(--border-color); /* Add a separator */
+}
+
+.mobile-header .header-left h1 {
+    font-size: 1.75rem; /* Consistent with h2 */
+    margin: 0;
+    color: var(--primary-color); /* Theme color */
+    font-weight: 600;
+}
+
+.mobile-header .header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.mobile-header .user-info { /* This was commented out in HTML, but styling for consistency */
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.mobile-header .notification-icon {
+    color: var(--text-color);
+    font-size: 1.5rem; /* Material icon size */
+}
+
+.mobile-header .wallet-amount {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+}
+
+/* Summary Cards */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.summary-card {
+    background: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg); /* Consistent radius */
+    box-shadow: var(--shadow-md); /* Slightly more prominent shadow */
+    transition: transform var(--transition-duration) var(--transition-timing), box-shadow var(--transition-duration) var(--transition-timing);
+}
+
+.summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.summary-card h3 { /* Standardize heading inside card */
+    font-size: 1rem; /* Consistent with h5 or a bit larger */
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--text-light); /* Lighter color for card subheadings */
+    font-weight: 500;
+}
+
+.summary-card .amount {
+    font-size: 1.75rem; /* Larger amount text */
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color); /* Default to main text color */
+}
+
+/* Specific card amount colors - can be kept or themed */
+.summary-card.income .amount {
+    color: var(--success-color); /* Use theme success color */
+}
+
+.summary-card.expense .amount {
+    color: var(--danger-color); /* Use theme danger color */
+}
+
+.summary-card.balance .amount {
+    color: var(--primary-color); /* Use theme primary for balance */
+}
+
+.summary-card.transaction .amount {
+    color: var(--secondary-color); /* Use theme secondary for transactions */
+}
+
+/* Budgeting Section */
+.budgeting-section {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.budgeting-section h2 {
+    font-size: 1.5rem; /* Consistent with h3 */
+    margin-top: 0;
+    margin-bottom: var(--spacing-lg);
+    color: var(--primary-color);
+    font-weight: 600;
+    text-align: center;
+}
+
+.budget-buttons {
+    display: grid; /* Use grid for better alignment and responsiveness */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.budget-button {
+    background: var(--primary-light); /* Use theme color */
+    color: var(--primary-color); /* Darker text for contrast on light bg */
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600; /* Bolder text */
+    font-size: 1rem;
+    transition: all var(--transition-duration) var(--transition-timing);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width) solid var(--primary-color); /* Add border */
+}
+
+.budget-button:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 1rem;
+        padding: 1.5rem;
     }
+}
 
-    .nav-link:hover::after {
-        width: 0;
+/* Mobile Container */
+.mobile-container {
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0;
+    background-color: #fff;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Status Bar */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px 10px;
+    background-color: #fff;
+}
+
+.time {
+    font-weight: 600;
+    font-size: 14px;
+    color: #000;
+}
+
+.status-icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.signal {
+    width: 18px;
+    height: 12px;
+    background: linear-gradient(90deg, #000 60%, #d1d1d6 60%);
+    border-radius: 1px;
+}
+
+.wifi {
+    width: 16px;
+    height: 12px;
+    background: radial-gradient(circle at center, #000 60%, transparent 60%);
+}
+
+.battery {
+    width: 24px;
+    height: 12px;
+    background-color: #000;
+    border-radius: 3px;
+    position: relative;
+}
+
+.battery::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 4px;
+    background-color: #000;
+    border-radius: 0 1px 1px 0;
+}
+
+/* Header */
+.mobile-container h1 {
+    color: #0C7D5F;
+    font-size: 20px;
+    margin: 16px 20px;
+    font-weight: 600;
+}
+
+/* Tabs */
+.tabs {
+    border-bottom: 2px solid #e0e0e0;
+    margin: 0 20px 24px;
+}
+
+.tab {
+    display: inline-block;
+    padding: 8px 0;
+    color: #1F3478;
+    font-weight: 600;
+    position: relative;
+    font-size: 14px;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #0C7D5F;
+}
+
+/* Expenses Overview */
+.expenses-overview {
+    margin: 0 20px 32px;
+}
+
+.expenses-overview h2 {
+    font-size: 16px;
+    color: #0C3478;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.chart-container {
+    position: relative;
+    height: 320px;
+    margin: 0 -20px;
+    padding: 0;
+}
+
+/* AI Advice Section */
+.ai-advice {
+    margin: 32px 20px;
+}
+
+.ai-advice h2 {
+    font-size: 16px;
+    color: #1a237e;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.advice-content {
+    background-color: #F8F7FF;
+    border-radius: 16px;
+    padding: 20px;
+    min-height: 120px;
+    line-height: 1.6;
+    color: #1a237e;
+}
+
+/* New Auth Form Styles */
+.auth-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    color: #065F46;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #666;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: #999;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-group input:focus ~ label,
+.form-group input:not(:placeholder-shown) ~ label {
+    top: -0.5rem;
+    left: 0.8rem;
+    font-size: 0.8rem;
+    color: #065F46;
+    background: white;
+    padding: 0 0.2rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #065F46, #34D399);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(6, 95, 70, 0.3);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #666;
+}
+
+.auth-footer a {
+    color: #065F46;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile Dashboard Styles */
+/* Ensure .container for dashboard uses general styles or specific overrides if needed */
+.dashboard-container { /* Changed from .container to avoid conflict if dashboard needs full width */
+    padding: var(--spacing-lg);
+    margin: 0; /* Reset margin for full-width feel if intended */
+    background: var(--background-color); /* Use theme background */
+}
+
+.mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    margin-bottom: var(--spacing-xl);
+    border-bottom: var(--border-width) solid var(--border-color); /* Add a separator */
+}
+
+.mobile-header .header-left h1 {
+    font-size: 1.75rem; /* Consistent with h2 */
+    margin: 0;
+    color: var(--primary-color); /* Theme color */
+    font-weight: 600;
+}
+
+.mobile-header .header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.mobile-header .user-info { /* This was commented out in HTML, but styling for consistency */
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.mobile-header .notification-icon {
+    color: var(--text-color);
+    font-size: 1.5rem; /* Material icon size */
+}
+
+.mobile-header .wallet-amount {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+}
+
+/* Summary Cards */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.summary-card {
+    background: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg); /* Consistent radius */
+    box-shadow: var(--shadow-md); /* Slightly more prominent shadow */
+    transition: transform var(--transition-duration) var(--transition-timing), box-shadow var(--transition-duration) var(--transition-timing);
+}
+
+.summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.summary-card h3 { /* Standardize heading inside card */
+    font-size: 1rem; /* Consistent with h5 or a bit larger */
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--text-light); /* Lighter color for card subheadings */
+    font-weight: 500;
+}
+
+.summary-card .amount {
+    font-size: 1.75rem; /* Larger amount text */
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color); /* Default to main text color */
+}
+
+/* Specific card amount colors - can be kept or themed */
+.summary-card.income .amount {
+    color: var(--success-color); /* Use theme success color */
+}
+
+.summary-card.expense .amount {
+    color: var(--danger-color); /* Use theme danger color */
+}
+
+.summary-card.balance .amount {
+    color: var(--primary-color); /* Use theme primary for balance */
+}
+
+.summary-card.transaction .amount {
+    color: var(--secondary-color); /* Use theme secondary for transactions */
+}
+
+/* Budgeting Section */
+.budgeting-section {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.budgeting-section h2 {
+    font-size: 1.5rem; /* Consistent with h3 */
+    margin-top: 0;
+    margin-bottom: var(--spacing-lg);
+    color: var(--primary-color);
+    font-weight: 600;
+    text-align: center;
+}
+
+.budget-buttons {
+    display: grid; /* Use grid for better alignment and responsiveness */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.budget-button {
+    background: var(--primary-light); /* Use theme color */
+    color: var(--primary-color); /* Darker text for contrast on light bg */
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600; /* Bolder text */
+    font-size: 1rem;
+    transition: all var(--transition-duration) var(--transition-timing);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width) solid var(--primary-color); /* Add border */
+}
+
+.budget-button:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 1rem;
+        padding: 1.5rem;
     }
+}
 
-    .dropdown-content,
-    .user-dropdown {
-        position: static;
-        box-shadow: none;
-        padding: 0;
-        background: rgba(6, 95, 70, 0.05);
+/* Mobile Container */
+.mobile-container {
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0;
+    background-color: #fff;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Status Bar */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px 10px;
+    background-color: #fff;
+}
+
+.time {
+    font-weight: 600;
+    font-size: 14px;
+    color: #000;
+}
+
+.status-icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.signal {
+    width: 18px;
+    height: 12px;
+    background: linear-gradient(90deg, #000 60%, #d1d1d6 60%);
+    border-radius: 1px;
+}
+
+.wifi {
+    width: 16px;
+    height: 12px;
+    background: radial-gradient(circle at center, #000 60%, transparent 60%);
+}
+
+.battery {
+    width: 24px;
+    height: 12px;
+    background-color: #000;
+    border-radius: 3px;
+    position: relative;
+}
+
+.battery::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 4px;
+    background-color: #000;
+    border-radius: 0 1px 1px 0;
+}
+
+/* Header */
+.mobile-container h1 {
+    color: #0C7D5F;
+    font-size: 20px;
+    margin: 16px 20px;
+    font-weight: 600;
+}
+
+/* Tabs */
+.tabs {
+    border-bottom: 2px solid #e0e0e0;
+    margin: 0 20px 24px;
+}
+
+.tab {
+    display: inline-block;
+    padding: 8px 0;
+    color: #1F3478;
+    font-weight: 600;
+    position: relative;
+    font-size: 14px;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #0C7D5F;
+}
+
+/* Expenses Overview */
+.expenses-overview {
+    margin: 0 20px 32px;
+}
+
+.expenses-overview h2 {
+    font-size: 16px;
+    color: #0C3478;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.chart-container {
+    position: relative;
+    height: 320px;
+    margin: 0 -20px;
+    padding: 0;
+}
+
+/* AI Advice Section */
+.ai-advice {
+    margin: 32px 20px;
+}
+
+.ai-advice h2 {
+    font-size: 16px;
+    color: #1a237e;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.advice-content {
+    background-color: #F8F7FF;
+    border-radius: 16px;
+    padding: 20px;
+    min-height: 120px;
+    line-height: 1.6;
+    color: #1a237e;
+}
+
+/* New Auth Form Styles */
+.auth-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    color: #065F46;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #666;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: #999;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-group input:focus ~ label,
+.form-group input:not(:placeholder-shown) ~ label {
+    top: -0.5rem;
+    left: 0.8rem;
+    font-size: 0.8rem;
+    color: #065F46;
+    background: white;
+    padding: 0 0.2rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #065F46, #34D399);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(6, 95, 70, 0.3);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #666;
+}
+
+.auth-footer a {
+    color: #065F46;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile Dashboard Styles */
+/* Ensure .container for dashboard uses general styles or specific overrides if needed */
+.dashboard-container { /* Changed from .container to avoid conflict if dashboard needs full width */
+    padding: var(--spacing-lg);
+    margin: 0; /* Reset margin for full-width feel if intended */
+    background: var(--background-color); /* Use theme background */
+}
+
+.mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    margin-bottom: var(--spacing-xl);
+    border-bottom: var(--border-width) solid var(--border-color); /* Add a separator */
+}
+
+.mobile-header .header-left h1 {
+    font-size: 1.75rem; /* Consistent with h2 */
+    margin: 0;
+    color: var(--primary-color); /* Theme color */
+    font-weight: 600;
+}
+
+.mobile-header .header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.mobile-header .user-info { /* This was commented out in HTML, but styling for consistency */
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.mobile-header .notification-icon {
+    color: var(--text-color);
+    font-size: 1.5rem; /* Material icon size */
+}
+
+.mobile-header .wallet-amount {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+}
+
+/* Summary Cards */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.summary-card {
+    background: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg); /* Consistent radius */
+    box-shadow: var(--shadow-md); /* Slightly more prominent shadow */
+    transition: transform var(--transition-duration) var(--transition-timing), box-shadow var(--transition-duration) var(--transition-timing);
+}
+
+.summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.summary-card h3 { /* Standardize heading inside card */
+    font-size: 1rem; /* Consistent with h5 or a bit larger */
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--text-light); /* Lighter color for card subheadings */
+    font-weight: 500;
+}
+
+.summary-card .amount {
+    font-size: 1.75rem; /* Larger amount text */
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color); /* Default to main text color */
+}
+
+/* Specific card amount colors - can be kept or themed */
+.summary-card.income .amount {
+    color: var(--success-color); /* Use theme success color */
+}
+
+.summary-card.expense .amount {
+    color: var(--danger-color); /* Use theme danger color */
+}
+
+.summary-card.balance .amount {
+    color: var(--primary-color); /* Use theme primary for balance */
+}
+
+.summary-card.transaction .amount {
+    color: var(--secondary-color); /* Use theme secondary for transactions */
+}
+
+/* Budgeting Section */
+.budgeting-section {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.budgeting-section h2 {
+    font-size: 1.5rem; /* Consistent with h3 */
+    margin-top: 0;
+    margin-bottom: var(--spacing-lg);
+    color: var(--primary-color);
+    font-weight: 600;
+    text-align: center;
+}
+
+.budget-buttons {
+    display: grid; /* Use grid for better alignment and responsiveness */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.budget-button {
+    background: var(--primary-light); /* Use theme color */
+    color: var(--primary-color); /* Darker text for contrast on light bg */
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600; /* Bolder text */
+    font-size: 1rem;
+    transition: all var(--transition-duration) var(--transition-timing);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width) solid var(--primary-color); /* Add border */
+}
+
+.budget-button:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 1rem;
+        padding: 1.5rem;
     }
+}
 
-    .dropdown-content a,
-    .user-dropdown a {
-        padding: 1rem 2rem;
+/* Mobile Container */
+.mobile-container {
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0;
+    background-color: #fff;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Status Bar */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px 10px;
+    background-color: #fff;
+}
+
+.time {
+    font-weight: 600;
+    font-size: 14px;
+    color: #000;
+}
+
+.status-icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.signal {
+    width: 18px;
+    height: 12px;
+    background: linear-gradient(90deg, #000 60%, #d1d1d6 60%);
+    border-radius: 1px;
+}
+
+.wifi {
+    width: 16px;
+    height: 12px;
+    background: radial-gradient(circle at center, #000 60%, transparent 60%);
+}
+
+.battery {
+    width: 24px;
+    height: 12px;
+    background-color: #000;
+    border-radius: 3px;
+    position: relative;
+}
+
+.battery::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 4px;
+    background-color: #000;
+    border-radius: 0 1px 1px 0;
+}
+
+/* Header */
+.mobile-container h1 {
+    color: #0C7D5F;
+    font-size: 20px;
+    margin: 16px 20px;
+    font-weight: 600;
+}
+
+/* Tabs */
+.tabs {
+    border-bottom: 2px solid #e0e0e0;
+    margin: 0 20px 24px;
+}
+
+.tab {
+    display: inline-block;
+    padding: 8px 0;
+    color: #1F3478;
+    font-weight: 600;
+    position: relative;
+    font-size: 14px;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #0C7D5F;
+}
+
+/* Expenses Overview */
+.expenses-overview {
+    margin: 0 20px 32px;
+}
+
+.expenses-overview h2 {
+    font-size: 16px;
+    color: #0C3478;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.chart-container {
+    position: relative;
+    height: 320px;
+    margin: 0 -20px;
+    padding: 0;
+}
+
+/* AI Advice Section */
+.ai-advice {
+    margin: 32px 20px;
+}
+
+.ai-advice h2 {
+    font-size: 16px;
+    color: #1a237e;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.advice-content {
+    background-color: #F8F7FF;
+    border-radius: 16px;
+    padding: 20px;
+    min-height: 120px;
+    line-height: 1.6;
+    color: #1a237e;
+}
+
+/* New Auth Form Styles */
+.auth-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    color: #065F46;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #666;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: #999;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-group input:focus ~ label,
+.form-group input:not(:placeholder-shown) ~ label {
+    top: -0.5rem;
+    left: 0.8rem;
+    font-size: 0.8rem;
+    color: #065F46;
+    background: white;
+    padding: 0 0.2rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #065F46, #34D399);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(6, 95, 70, 0.3);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #666;
+}
+
+.auth-footer a {
+    color: #065F46;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile Dashboard Styles */
+/* Ensure .container for dashboard uses general styles or specific overrides if needed */
+.dashboard-container { /* Changed from .container to avoid conflict if dashboard needs full width */
+    padding: var(--spacing-lg);
+    margin: 0; /* Reset margin for full-width feel if intended */
+    background: var(--background-color); /* Use theme background */
+}
+
+.mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    margin-bottom: var(--spacing-xl);
+    border-bottom: var(--border-width) solid var(--border-color); /* Add a separator */
+}
+
+.mobile-header .header-left h1 {
+    font-size: 1.75rem; /* Consistent with h2 */
+    margin: 0;
+    color: var(--primary-color); /* Theme color */
+    font-weight: 600;
+}
+
+.mobile-header .header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.mobile-header .user-info { /* This was commented out in HTML, but styling for consistency */
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.mobile-header .notification-icon {
+    color: var(--text-color);
+    font-size: 1.5rem; /* Material icon size */
+}
+
+.mobile-header .wallet-amount {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+}
+
+/* Summary Cards */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.summary-card {
+    background: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg); /* Consistent radius */
+    box-shadow: var(--shadow-md); /* Slightly more prominent shadow */
+    transition: transform var(--transition-duration) var(--transition-timing), box-shadow var(--transition-duration) var(--transition-timing);
+}
+
+.summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.summary-card h3 { /* Standardize heading inside card */
+    font-size: 1rem; /* Consistent with h5 or a bit larger */
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--text-light); /* Lighter color for card subheadings */
+    font-weight: 500;
+}
+
+.summary-card .amount {
+    font-size: 1.75rem; /* Larger amount text */
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color); /* Default to main text color */
+}
+
+/* Specific card amount colors - can be kept or themed */
+.summary-card.income .amount {
+    color: var(--success-color); /* Use theme success color */
+}
+
+.summary-card.expense .amount {
+    color: var(--danger-color); /* Use theme danger color */
+}
+
+.summary-card.balance .amount {
+    color: var(--primary-color); /* Use theme primary for balance */
+}
+
+.summary-card.transaction .amount {
+    color: var(--secondary-color); /* Use theme secondary for transactions */
+}
+
+/* Budgeting Section */
+.budgeting-section {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.budgeting-section h2 {
+    font-size: 1.5rem; /* Consistent with h3 */
+    margin-top: 0;
+    margin-bottom: var(--spacing-lg);
+    color: var(--primary-color);
+    font-weight: 600;
+    text-align: center;
+}
+
+.budget-buttons {
+    display: grid; /* Use grid for better alignment and responsiveness */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.budget-button {
+    background: var(--primary-light); /* Use theme color */
+    color: var(--primary-color); /* Darker text for contrast on light bg */
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600; /* Bolder text */
+    font-size: 1rem;
+    transition: all var(--transition-duration) var(--transition-timing);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width) solid var(--primary-color); /* Add border */
+}
+
+.budget-button:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 1rem;
+        padding: 1.5rem;
     }
+}
 
-    .footer-container {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-        padding: 0 1rem;
+/* Mobile Container */
+.mobile-container {
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0;
+    background-color: #fff;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Status Bar */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px 10px;
+    background-color: #fff;
+}
+
+.time {
+    font-weight: 600;
+    font-size: 14px;
+    color: #000;
+}
+
+.status-icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.signal {
+    width: 18px;
+    height: 12px;
+    background: linear-gradient(90deg, #000 60%, #d1d1d6 60%);
+    border-radius: 1px;
+}
+
+.wifi {
+    width: 16px;
+    height: 12px;
+    background: radial-gradient(circle at center, #000 60%, transparent 60%);
+}
+
+.battery {
+    width: 24px;
+    height: 12px;
+    background-color: #000;
+    border-radius: 3px;
+    position: relative;
+}
+
+.battery::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 4px;
+    background-color: #000;
+    border-radius: 0 1px 1px 0;
+}
+
+/* Header */
+.mobile-container h1 {
+    color: #0C7D5F;
+    font-size: 20px;
+    margin: 16px 20px;
+    font-weight: 600;
+}
+
+/* Tabs */
+.tabs {
+    border-bottom: 2px solid #e0e0e0;
+    margin: 0 20px 24px;
+}
+
+.tab {
+    display: inline-block;
+    padding: 8px 0;
+    color: #1F3478;
+    font-weight: 600;
+    position: relative;
+    font-size: 14px;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #0C7D5F;
+}
+
+/* Expenses Overview */
+.expenses-overview {
+    margin: 0 20px 32px;
+}
+
+.expenses-overview h2 {
+    font-size: 16px;
+    color: #0C3478;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.chart-container {
+    position: relative;
+    height: 320px;
+    margin: 0 -20px;
+    padding: 0;
+}
+
+/* AI Advice Section */
+.ai-advice {
+    margin: 32px 20px;
+}
+
+.ai-advice h2 {
+    font-size: 16px;
+    color: #1a237e;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.advice-content {
+    background-color: #F8F7FF;
+    border-radius: 16px;
+    padding: 20px;
+    min-height: 120px;
+    line-height: 1.6;
+    color: #1a237e;
+}
+
+/* New Auth Form Styles */
+.auth-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    color: #065F46;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #666;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: #999;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-group input:focus ~ label,
+.form-group input:not(:placeholder-shown) ~ label {
+    top: -0.5rem;
+    left: 0.8rem;
+    font-size: 0.8rem;
+    color: #065F46;
+    background: white;
+    padding: 0 0.2rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #065F46, #34D399);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(6, 95, 70, 0.3);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #666;
+}
+
+.auth-footer a {
+    color: #065F46;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile Dashboard Styles */
+/* Ensure .container for dashboard uses general styles or specific overrides if needed */
+.dashboard-container { /* Changed from .container to avoid conflict if dashboard needs full width */
+    padding: var(--spacing-lg);
+    margin: 0; /* Reset margin for full-width feel if intended */
+    background: var(--background-color); /* Use theme background */
+}
+
+.mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    margin-bottom: var(--spacing-xl);
+    border-bottom: var(--border-width) solid var(--border-color); /* Add a separator */
+}
+
+.mobile-header .header-left h1 {
+    font-size: 1.75rem; /* Consistent with h2 */
+    margin: 0;
+    color: var(--primary-color); /* Theme color */
+    font-weight: 600;
+}
+
+.mobile-header .header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.mobile-header .user-info { /* This was commented out in HTML, but styling for consistency */
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.mobile-header .notification-icon {
+    color: var(--text-color);
+    font-size: 1.5rem; /* Material icon size */
+}
+
+.mobile-header .wallet-amount {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+}
+
+/* Summary Cards */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.summary-card {
+    background: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg); /* Consistent radius */
+    box-shadow: var(--shadow-md); /* Slightly more prominent shadow */
+    transition: transform var(--transition-duration) var(--transition-timing), box-shadow var(--transition-duration) var(--transition-timing);
+}
+
+.summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.summary-card h3 { /* Standardize heading inside card */
+    font-size: 1rem; /* Consistent with h5 or a bit larger */
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--text-light); /* Lighter color for card subheadings */
+    font-weight: 500;
+}
+
+.summary-card .amount {
+    font-size: 1.75rem; /* Larger amount text */
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color); /* Default to main text color */
+}
+
+/* Specific card amount colors - can be kept or themed */
+.summary-card.income .amount {
+    color: var(--success-color); /* Use theme success color */
+}
+
+.summary-card.expense .amount {
+    color: var(--danger-color); /* Use theme danger color */
+}
+
+.summary-card.balance .amount {
+    color: var(--primary-color); /* Use theme primary for balance */
+}
+
+.summary-card.transaction .amount {
+    color: var(--secondary-color); /* Use theme secondary for transactions */
+}
+
+/* Budgeting Section */
+.budgeting-section {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.budgeting-section h2 {
+    font-size: 1.5rem; /* Consistent with h3 */
+    margin-top: 0;
+    margin-bottom: var(--spacing-lg);
+    color: var(--primary-color);
+    font-weight: 600;
+    text-align: center;
+}
+
+.budget-buttons {
+    display: grid; /* Use grid for better alignment and responsiveness */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.budget-button {
+    background: var(--primary-light); /* Use theme color */
+    color: var(--primary-color); /* Darker text for contrast on light bg */
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600; /* Bolder text */
+    font-size: 1rem;
+    transition: all var(--transition-duration) var(--transition-timing);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width) solid var(--primary-color); /* Add border */
+}
+
+.budget-button:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 1rem;
+        padding: 1.5rem;
     }
+}
 
-    .newsletter-form {
-        flex-direction: column;
+/* Mobile Container */
+.mobile-container {
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0;
+    background-color: #fff;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Status Bar */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px 10px;
+    background-color: #fff;
+}
+
+.time {
+    font-weight: 600;
+    font-size: 14px;
+    color: #000;
+}
+
+.status-icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.signal {
+    width: 18px;
+    height: 12px;
+    background: linear-gradient(90deg, #000 60%, #d1d1d6 60%);
+    border-radius: 1px;
+}
+
+.wifi {
+    width: 16px;
+    height: 12px;
+    background: radial-gradient(circle at center, #000 60%, transparent 60%);
+}
+
+.battery {
+    width: 24px;
+    height: 12px;
+    background-color: #000;
+    border-radius: 3px;
+    position: relative;
+}
+
+.battery::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 4px;
+    background-color: #000;
+    border-radius: 0 1px 1px 0;
+}
+
+/* Header */
+.mobile-container h1 {
+    color: #0C7D5F;
+    font-size: 20px;
+    margin: 16px 20px;
+    font-weight: 600;
+}
+
+/* Tabs */
+.tabs {
+    border-bottom: 2px solid #e0e0e0;
+    margin: 0 20px 24px;
+}
+
+.tab {
+    display: inline-block;
+    padding: 8px 0;
+    color: #1F3478;
+    font-weight: 600;
+    position: relative;
+    font-size: 14px;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #0C7D5F;
+}
+
+/* Expenses Overview */
+.expenses-overview {
+    margin: 0 20px 32px;
+}
+
+.expenses-overview h2 {
+    font-size: 16px;
+    color: #0C3478;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.chart-container {
+    position: relative;
+    height: 320px;
+    margin: 0 -20px;
+    padding: 0;
+}
+
+/* AI Advice Section */
+.ai-advice {
+    margin: 32px 20px;
+}
+
+.ai-advice h2 {
+    font-size: 16px;
+    color: #1a237e;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.advice-content {
+    background-color: #F8F7FF;
+    border-radius: 16px;
+    padding: 20px;
+    min-height: 120px;
+    line-height: 1.6;
+    color: #1a237e;
+}
+
+/* New Auth Form Styles */
+.auth-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    color: #065F46;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #666;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: #999;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-group input:focus ~ label,
+.form-group input:not(:placeholder-shown) ~ label {
+    top: -0.5rem;
+    left: 0.8rem;
+    font-size: 0.8rem;
+    color: #065F46;
+    background: white;
+    padding: 0 0.2rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #065F46, #34D399);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(6, 95, 70, 0.3);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #666;
+}
+
+.auth-footer a {
+    color: #065F46;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile Dashboard Styles */
+/* Ensure .container for dashboard uses general styles or specific overrides if needed */
+.dashboard-container { /* Changed from .container to avoid conflict if dashboard needs full width */
+    padding: var(--spacing-lg);
+    margin: 0; /* Reset margin for full-width feel if intended */
+    background: var(--background-color); /* Use theme background */
+}
+
+.mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    margin-bottom: var(--spacing-xl);
+    border-bottom: var(--border-width) solid var(--border-color); /* Add a separator */
+}
+
+.mobile-header .header-left h1 {
+    font-size: 1.75rem; /* Consistent with h2 */
+    margin: 0;
+    color: var(--primary-color); /* Theme color */
+    font-weight: 600;
+}
+
+.mobile-header .header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.mobile-header .user-info { /* This was commented out in HTML, but styling for consistency */
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.mobile-header .notification-icon {
+    color: var(--text-color);
+    font-size: 1.5rem; /* Material icon size */
+}
+
+.mobile-header .wallet-amount {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+}
+
+/* Summary Cards */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.summary-card {
+    background: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg); /* Consistent radius */
+    box-shadow: var(--shadow-md); /* Slightly more prominent shadow */
+    transition: transform var(--transition-duration) var(--transition-timing), box-shadow var(--transition-duration) var(--transition-timing);
+}
+
+.summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.summary-card h3 { /* Standardize heading inside card */
+    font-size: 1rem; /* Consistent with h5 or a bit larger */
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--text-light); /* Lighter color for card subheadings */
+    font-weight: 500;
+}
+
+.summary-card .amount {
+    font-size: 1.75rem; /* Larger amount text */
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color); /* Default to main text color */
+}
+
+/* Specific card amount colors - can be kept or themed */
+.summary-card.income .amount {
+    color: var(--success-color); /* Use theme success color */
+}
+
+.summary-card.expense .amount {
+    color: var(--danger-color); /* Use theme danger color */
+}
+
+.summary-card.balance .amount {
+    color: var(--primary-color); /* Use theme primary for balance */
+}
+
+.summary-card.transaction .amount {
+    color: var(--secondary-color); /* Use theme secondary for transactions */
+}
+
+/* Budgeting Section */
+.budgeting-section {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.budgeting-section h2 {
+    font-size: 1.5rem; /* Consistent with h3 */
+    margin-top: 0;
+    margin-bottom: var(--spacing-lg);
+    color: var(--primary-color);
+    font-weight: 600;
+    text-align: center;
+}
+
+.budget-buttons {
+    display: grid; /* Use grid for better alignment and responsiveness */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.budget-button {
+    background: var(--primary-light); /* Use theme color */
+    color: var(--primary-color); /* Darker text for contrast on light bg */
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600; /* Bolder text */
+    font-size: 1rem;
+    transition: all var(--transition-duration) var(--transition-timing);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width) solid var(--primary-color); /* Add border */
+}
+
+.budget-button:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 1rem;
+        padding: 1.5rem;
     }
+}
 
-    .newsletter-form button {
-        width: 100%;
+/* Mobile Container */
+.mobile-container {
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0;
+    background-color: #fff;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Status Bar */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px 10px;
+    background-color: #fff;
+}
+
+.time {
+    font-weight: 600;
+    font-size: 14px;
+    color: #000;
+}
+
+.status-icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.signal {
+    width: 18px;
+    height: 12px;
+    background: linear-gradient(90deg, #000 60%, #d1d1d6 60%);
+    border-radius: 1px;
+}
+
+.wifi {
+    width: 16px;
+    height: 12px;
+    background: radial-gradient(circle at center, #000 60%, transparent 60%);
+}
+
+.battery {
+    width: 24px;
+    height: 12px;
+    background-color: #000;
+    border-radius: 3px;
+    position: relative;
+}
+
+.battery::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 4px;
+    background-color: #000;
+    border-radius: 0 1px 1px 0;
+}
+
+/* Header */
+.mobile-container h1 {
+    color: #0C7D5F;
+    font-size: 20px;
+    margin: 16px 20px;
+    font-weight: 600;
+}
+
+/* Tabs */
+.tabs {
+    border-bottom: 2px solid #e0e0e0;
+    margin: 0 20px 24px;
+}
+
+.tab {
+    display: inline-block;
+    padding: 8px 0;
+    color: #1F3478;
+    font-weight: 600;
+    position: relative;
+    font-size: 14px;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #0C7D5F;
+}
+
+/* Expenses Overview */
+.expenses-overview {
+    margin: 0 20px 32px;
+}
+
+.expenses-overview h2 {
+    font-size: 16px;
+    color: #0C3478;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.chart-container {
+    position: relative;
+    height: 320px;
+    margin: 0 -20px;
+    padding: 0;
+}
+
+/* AI Advice Section */
+.ai-advice {
+    margin: 32px 20px;
+}
+
+.ai-advice h2 {
+    font-size: 16px;
+    color: #1a237e;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.advice-content {
+    background-color: #F8F7FF;
+    border-radius: 16px;
+    padding: 20px;
+    min-height: 120px;
+    line-height: 1.6;
+    color: #1a237e;
+}
+
+/* New Auth Form Styles */
+.auth-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    color: #065F46;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #666;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: #999;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-group input:focus ~ label,
+.form-group input:not(:placeholder-shown) ~ label {
+    top: -0.5rem;
+    left: 0.8rem;
+    font-size: 0.8rem;
+    color: #065F46;
+    background: white;
+    padding: 0 0.2rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #065F46, #34D399);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(6, 95, 70, 0.3);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #666;
+}
+
+.auth-footer a {
+    color: #065F46;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile Dashboard Styles */
+/* Ensure .container for dashboard uses general styles or specific overrides if needed */
+.dashboard-container { /* Changed from .container to avoid conflict if dashboard needs full width */
+    padding: var(--spacing-lg);
+    margin: 0; /* Reset margin for full-width feel if intended */
+    background: var(--background-color); /* Use theme background */
+}
+
+.mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    margin-bottom: var(--spacing-xl);
+    border-bottom: var(--border-width) solid var(--border-color); /* Add a separator */
+}
+
+.mobile-header .header-left h1 {
+    font-size: 1.75rem; /* Consistent with h2 */
+    margin: 0;
+    color: var(--primary-color); /* Theme color */
+    font-weight: 600;
+}
+
+.mobile-header .header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.mobile-header .user-info { /* This was commented out in HTML, but styling for consistency */
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.mobile-header .notification-icon {
+    color: var(--text-color);
+    font-size: 1.5rem; /* Material icon size */
+}
+
+.mobile-header .wallet-amount {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+}
+
+/* Summary Cards */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.summary-card {
+    background: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg); /* Consistent radius */
+    box-shadow: var(--shadow-md); /* Slightly more prominent shadow */
+    transition: transform var(--transition-duration) var(--transition-timing), box-shadow var(--transition-duration) var(--transition-timing);
+}
+
+.summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.summary-card h3 { /* Standardize heading inside card */
+    font-size: 1rem; /* Consistent with h5 or a bit larger */
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--text-light); /* Lighter color for card subheadings */
+    font-weight: 500;
+}
+
+.summary-card .amount {
+    font-size: 1.75rem; /* Larger amount text */
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color); /* Default to main text color */
+}
+
+/* Specific card amount colors - can be kept or themed */
+.summary-card.income .amount {
+    color: var(--success-color); /* Use theme success color */
+}
+
+.summary-card.expense .amount {
+    color: var(--danger-color); /* Use theme danger color */
+}
+
+.summary-card.balance .amount {
+    color: var(--primary-color); /* Use theme primary for balance */
+}
+
+.summary-card.transaction .amount {
+    color: var(--secondary-color); /* Use theme secondary for transactions */
+}
+
+/* Budgeting Section */
+.budgeting-section {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.budgeting-section h2 {
+    font-size: 1.5rem; /* Consistent with h3 */
+    margin-top: 0;
+    margin-bottom: var(--spacing-lg);
+    color: var(--primary-color);
+    font-weight: 600;
+    text-align: center;
+}
+
+.budget-buttons {
+    display: grid; /* Use grid for better alignment and responsiveness */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.budget-button {
+    background: var(--primary-light); /* Use theme color */
+    color: var(--primary-color); /* Darker text for contrast on light bg */
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600; /* Bolder text */
+    font-size: 1rem;
+    transition: all var(--transition-duration) var(--transition-timing);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width) solid var(--primary-color); /* Add border */
+}
+
+.budget-button:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 1rem;
+        padding: 1.5rem;
     }
-
-    .table {
-        display: block;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    h1 { font-size: 2rem; }
-    h2 { font-size: 1.75rem; }
-    h3 { font-size: 1.25rem; }
 }

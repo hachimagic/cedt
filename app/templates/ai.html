@@ -1,31 +1,25 @@
 {% extends "base.html" %}
 
+{% block title %}AI Financial Planning{% endblock %}
+
 {% block content %}
-<div class="mobile-container">
-  <div class="status-bar">
-    <div class="time">9:41</div>
-    <div class="status-icons">
-      <div class="signal"></div>
-      <div class="wifi"></div>
-      <div class="battery"></div>
-    </div>
+<div class="container">
+  <div class="page-header">
+    <h1>Personal AI for Financial Planning</h1>
   </div>
-
-  <h1>Personal AI for Financial Planning</h1>
   
-  <div class="tabs">
-    <div class="tab active">OVERVIEW</div>
-  </div>
-
-  <div class="expenses-overview">
+  <div class="section-header">
     <h2>Total Expenses</h2>
-    <div class="chart-container" style="height: 300px;">
-      <canvas id="expensesChart"></canvas>
-    </div>
+  </div>
+  
+  <div class="chart-container">
+    <canvas id="expensesChart"></canvas>
   </div>
 
-  <div class="financial-info-section">
-    <h2>Your Financial Information</h2>
+  <div class="form-container">
+    <div class="section-header">
+      <h2>Your Financial Information</h2>
+    </div>
     <div class="financial-inputs-grid">
       <div class="input-group">
         <label>Monthly Income</label>
@@ -85,15 +79,10 @@
     <div id="resultsContent"></div>
   </div>
 
-  <div class="ai-advice">
-    <h2>AI advice:</h2>
-    <div class="advice-content" id="aiAdvice">
-      Loading AI advice...
+  <div class="form-container">
+    <div class="section-header">
+      <h2>ที่ปรึกษาทางการเงิน AI</h2>
     </div>
-  </div>
-
-  <div class="thai-ai-advisor">
-    <h2>ที่ปรึกษาทางการเงิน AI</h2>
     <form id="thaiAiForm" class="financial-form">
       <textarea 
         id="thaiAiQuestion" 
@@ -111,15 +100,30 @@
       <div class="response-content"></div>
     </div>
     <div id="continueDashboard" style="display: none; text-align: center; margin-top: 20px;">
-      <a href="/dashboard" class="save-button">ไปยังแดชบอร์ด</a>
+      <a href="/dashboard" class="btn btn-primary">ไปยังแดชบอร์ด</a>
     </div>
   </div>
-</div>
 
 <script>
 document.getElementById('thaiAiForm').addEventListener('submit', function(e) {
   e.preventDefault();
+  
+  const form = e.target;
+  const submitButton = form.querySelector('button[type="submit"]');
   const question = document.getElementById('thaiAiQuestion').value;
+  const responseDiv = document.getElementById('thaiAiResponse');
+  const responseContent = responseDiv.querySelector('.response-content');
+  
+  // Disable button and show loading state
+  submitButton.disabled = true;
+  submitButton.style.backgroundColor = '#808080';
+  submitButton.style.cursor = 'not-allowed';
+  const originalText = submitButton.innerHTML;
+  submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังประมวลผล...';
+  
+  // Show response div with loading message
+  responseContent.innerHTML = 'กำลังประมวลผล...';
+  responseDiv.style.display = 'block';
   
   fetch('/ai/thai_advisor', {
     method: 'POST',
@@ -130,136 +134,152 @@ document.getElementById('thaiAiForm').addEventListener('submit', function(e) {
       question: question
     })
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      if (response.status === 401) {
+        // Session expired
+        window.location.href = '/login';
+        throw new Error('กรุณาเข้าสู่ระบบใหม่');
+      }
+      if (response.status === 404) {
+        throw new Error('ไม่พบหน้าที่ต้องการ กรุณารีเฟรชหน้าเว็บ');
+      }
+      throw new Error('เซิร์ฟเวอร์มีปัญหา กรุณาลองใหม่อีกครั้ง');
+    }
+    // Check if response is JSON
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('เซิร์ฟเวอร์ส่งข้อมูลผิดรูปแบบ กรุณารีเฟรชหน้าเว็บ');
+    }
+    return response.json();
+  })
   .then(data => {
-    const responseDiv = document.getElementById('thaiAiResponse');
-    responseDiv.querySelector('.response-content').innerHTML = data.response.replace(/\n/g, '<br>');
-    responseDiv.style.display = 'block';
-    
-    // Show continue to dashboard button after first question
-    document.getElementById('continueDashboard').style.display = 'block';
+    if (data.success && data.data && data.data.response) {
+      responseContent.innerHTML = data.data.response.replace(/\n/g, '<br>');
+      document.getElementById('continueDashboard').style.display = 'block';
+    } else {
+      throw new Error(data.message || 'ไม่สามารถรับข้อมูลได้ กรุณาลองใหม่อีกครั้ง');
+    }
   })
   .catch(error => {
     console.error('Error:', error);
-    alert('เกิดข้อผิดพลาดในการส่งคำถาม กรุณาลองใหม่');
+    responseContent.innerHTML = 'เกิดข้อผิดพลาด: ' + error.message;
+    // If session expired, disable form
+    if (error.message === 'กรุณาเข้าสู่ระบบใหม่') {
+      form.querySelector('textarea').disabled = true;
+      submitButton.style.display = 'none';
+    }
+  })
+  .finally(() => {
+    // Reset button state after a delay unless redirecting
+    if (responseContent.innerHTML !== 'เกิดข้อผิดพลาด: กรุณาเข้าสู่ระบบใหม่') {
+      setTimeout(() => {
+        submitButton.disabled = false;
+        submitButton.style.backgroundColor = '';
+        submitButton.style.cursor = '';
+        submitButton.innerHTML = originalText;
+      }, 500);
+    }
   });
 });
 </script>
 
-<style>
-.thai-ai-advisor {
-  margin: 30px auto;
-  padding: 20px;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-}
-
-.financial-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.financial-form textarea {
-  width: 100%;
-  min-height: 120px;
-  padding: 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 16px;
-  resize: vertical;
-}
-
-.financial-form button {
-  align-self: flex-end;
-}
-</style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Initialize empty chart
-  const expensesChart = new Chart(document.getElementById('expensesChart'), {
-    type: 'doughnut',
-    data: {
-      labels: [],
-      datasets: [{
-        data: [],
-        backgroundColor: [
-          '#FFB800', // Food/Groceries (Yellow)
-          '#00BFFF', // Utilities (Blue)
-          '#FF6347', // Transportation (Tomato)
-          '#32CD32', // Savings (Lime Green)
-          '#9932CC', // Miscellaneous (Dark Orchid)
-        ],
-        borderWidth: 0
-      }]
-    },
-    options: {
-      cutout: '75%',
-      responsive: true,
-      maintainAspectRatio: false,
-      layout: {
-        padding: {
-          left: 20,
-          right: 20
-        }
-      },
-      plugins: {
-        legend: {
-          position: 'right',
-          align: 'center',
-          labels: {
-            usePointStyle: true,
-            padding: 15,
-            font: {
-              size: 12,
-              family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-              weight: '500'
-            },
-            color: '#1F3478',
-            boxWidth: 8,
-            boxHeight: 8
-          }
-        }
-      }
-    }
-  });
+  // Prefill form fields if profile data exists
+  const profileData = JSON.parse('{% if profile %}{"income":{{ profile.income|default(0)|int }},"expenses":{{ profile.expenses|default(0)|int }},"debt":{{ profile.debt|default(0)|int }},"savingsGoal":{{ profile.savings_goal|default(0)|int }}}{% else %}null{% endif %}');
 
-  // Load and update chart data
-  console.log('Initializing expenses chart...');
-  fetch('/ai/analysis/overview')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to load chart data');
+  if (profileData) {
+    document.getElementById('earningsInput').value = '฿' + profileData.income.toLocaleString();
+    document.getElementById('expensesInput').value = '฿' + profileData.expenses.toLocaleString();
+    document.getElementById('debtInput').value = '฿' + profileData.debt.toLocaleString();
+    document.getElementById('savingsInput').value = '฿' + profileData.savingsGoal.toLocaleString();
+  }
+
+  // Color palette for charts
+  const colors = [
+    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+    '#9966FF', '#FF9F40', '#FF6384', '#36A2EB'
+  ];
+
+  // Initialize chart
+  let expensesChart;
+  function initializeChart() {
+    // Destroy existing chart if it exists
+    const chartCanvas = document.getElementById('expensesChart');
+    const existingChart = Chart.getChart(chartCanvas);
+    if (existingChart) {
+      existingChart.destroy();
+    }
+
+    expensesChart = new Chart(chartCanvas, {
+      type: 'doughnut',
+      data: {
+        labels: [],
+        datasets: [{
+          data: [],
+          backgroundColor: colors,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              padding: 20,
+              font: {
+                size: 12
+              }
+            }
+          }
+        },
+        animation: {
+          animateScale: true,
+          animateRotate: true
+        }
       }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Chart data loaded:', data);
-      if (!data.categories || Object.keys(data.categories).length === 0) {
-        console.warn('No category data found');
-        return;
-      }
-      
-      // Update chart with real data
-      // Update chart with real data
-      expensesChart.data.labels = Object.keys(data.categories);
-      expensesChart.data.datasets[0].data = Object.values(data.categories);
-      expensesChart.update();
-      
-      // Load AI advice
-      return fetch('/ai/analysis/ai');
-    })
-    .then(response => response.json())
-    .then(data => {
-      document.getElementById('aiAdvice').innerHTML = data.analysis.replace(/\n/g, '<br>');
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      document.getElementById('aiAdvice').textContent = 'Error loading financial data. Please try again.';
     });
+
+    // Load and update chart data
+    console.log('Initializing expenses chart...');
+    fetch('/ai/analysis/overview')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to load chart data');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Chart data loaded:', data);
+        if (!data.categories || Object.keys(data.categories).length === 0) {
+          console.warn('No category data found');
+          return;
+        }
+        
+        // Update chart with real data
+        expensesChart.data.labels = Object.keys(data.categories);
+        expensesChart.data.datasets[0].data = Object.values(data.categories);
+        expensesChart.update();
+      })
+      .catch(error => {
+        console.error('Error loading chart data:', error);
+        // Show error message in chart area
+        chartCanvas.parentElement.innerHTML = `
+          <div class="chart-error">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Failed to load chart data. Please try again later.</p>
+          </div>
+        `;
+      });
+  }
+
+  // Initialize chart on page load
+  initializeChart();
 
   // Handle currency formatting for all financial inputs
   const financialInputs = document.querySelectorAll('.financial-input');
@@ -274,7 +294,13 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Handle analyze button click
-  document.getElementById('analyzeBtn').addEventListener('click', function() {
+  document.getElementById('analyzeBtn').addEventListener('click', function(event) {
+    const button = event.target;
+    button.disabled = true;
+    button.style.backgroundColor = 'grey';
+    button.style.cursor = 'not-allowed';
+    button.textContent = 'Processing...';
+
     const income = parseFloat(document.getElementById('earningsInput').value.replace(/[^0-9]/g, '')) || 0;
     const expenses = parseFloat(document.getElementById('expensesInput').value.replace(/[^0-9]/g, '')) || 0;
     const debt = parseFloat(document.getElementById('debtInput').value.replace(/[^0-9]/g, '')) || 0;
@@ -308,6 +334,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('resultsContent').innerHTML = resultsHTML;
     document.getElementById('analysisResults').style.display = 'block';
+
+    // Simulate processing or send request
+    setTimeout(() => {
+      button.disabled = false;
+      button.style.backgroundColor = '';
+      button.style.cursor = '';
+      button.textContent = 'Analyze My Finances';
+    }, 3000); // Reset after 3 seconds for demo purposes
   });
 
   // Handle save button click
@@ -344,159 +378,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<style>
-.financial-info-section {
-  margin: 30px auto;
-  padding: 20px;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-}
-
-.financial-info-section h2 {
-  color: #1F3478;
-  font-size: 1.5em;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.financial-inputs-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.input-group label {
-  color: #1F3478;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.financial-input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 16px;
-  color: #1F3478;
-  background: #ffffff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  transition: all 0.2s ease;
-}
-
-.financial-input:focus {
-  outline: none;
-  border-color: #00BFFF;
-  box-shadow: 0 2px 8px rgba(0,191,255,0.2);
-}
-
-.financial-input::placeholder {
-  color: #9e9e9e;
-}
-
-.action-buttons {
-  grid-column: 1 / -1;
-  display: flex;
-  gap: 15px;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.analyze-button, .save-button {
-  flex: 1;
-  max-width: 300px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  color: white;
-}
-
-.analyze-button {
-  background-color: #00BFFF;
-}
-
-.analyze-button:hover {
-  background-color: #0095D9;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,191,255,0.2);
-}
-
-.save-button {
-  background-color: #28a745;
-}
-
-.save-button:hover {
-  background-color: #218838;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(40,167,69,0.2);
-}
-
-.analyze-button:active, .save-button:active {
-  transform: translateY(0);
-}
-
-.analysis-results {
-  margin: 20px auto;
-  padding: 20px;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-}
-
-.analysis-results h3 {
-  color: #1F3478;
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-.metric {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  padding: 10px 0;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.metric:last-child {
-  border-bottom: none;
-}
-
-.label {
-  font-weight: 500;
-  color: #1F3478;
-}
-
-.value {
-  font-weight: 600;
-  color: #00BFFF;
-}
-
-@media (max-width: 768px) {
-  .financial-inputs-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .action-buttons {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .analyze-button, .save-button {
-    width: 100%;
-  }
-}
-</style>
 {% endblock %}
